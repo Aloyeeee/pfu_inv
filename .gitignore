@@ -1,0 +1,54 @@
+# ЛОГИ ТА ТИМЧАСОВІ ФАЙЛИ
+php_errors.log
+*.log
+*.tmp
+*.swp
+*.swo
+*.bak
+*.old
+
+# СЛУЖБОВІ/ДОПОМІЖНІ SCRIPTS ДЛЯ ФІКСІВ
+fix_*
+
+# КЕШ/СЕАНСИ/ЗАГАЛЬНІ TMP-ПАПКИ
+cache/
+tmp/
+temp/
+session/
+sessions/
+
+# БЕКАПИ ТА ДАМПИ БД
+*.sql
+*.sql.gz
+*.dump
+*.bak.sql
+
+# НАЛАШТУВАННЯ СЕРВЕРА / СЕКРЕТИ (якщо зʼявляться)
+.env
+.env.*
+config.local.php
+*local.php
+
+# PHP ВЕНДОРИ (якщо будете додавати Composer)
+vendor/
+composer.lock
+
+# NODE / FRONTEND АРТЕФАКТИ (на майбутнє)
+node_modules/
+npm-debug.log*
+yarn.lock
+pnpm-lock.yaml
+dist/
+build/
+
+# IDE / EDITOR META
+.idea/
+.vscode/
+*.iml
+*.code-workspace
+
+# СИСТЕМНІ ФАЙЛИ ОС
+.DS_Store
+Thumbs.db
+desktop.ini
+
