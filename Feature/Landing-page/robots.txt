@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://yourusername.github.io/bachelor-landing/sitemap.xml
+
+Disallow: /temp/
+Disallow: /admin/
