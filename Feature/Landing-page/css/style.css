@@ -1,117 +1,500 @@
-:root {
-   --primary: #0ea5e9;
-   --primary-dark: #0284c7;
-   --text: #0f172a;
-   --bg: #f8fafc;
-   --white: #ffffff;
-   --gray: #64748b;
-   --border: #e2e8f0;
-   --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
-}
+/* ==========================================
+   СТИЛІЗАЦІЯ ТА АДАПТИВНІСТЬ
+   ========================================== */
 
-* {
-   margin: 0;
-   padding: 0;
-   box-sizing: border-box;
-}
-
-body {
-   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-   line-height: 1.6;
-   color: var(--text);
-   background: var(--bg);
-}
-
-.container {
-   max-width: 1200px;
-   margin: 0 auto;
-   padding: 0 20px;
-}
-
-.header {
-   background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-   color: var(--white);
-   text-align: center;
-   padding: 60px 20px;
-}
-
-.logo {
-   width: 120px;
-   height: auto;
-   margin-bottom: 20px;
-   border-radius: 16px;
-   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
-}
-
-.header h1 {
-   font-size: clamp(1.8rem, 5vw, 2.8rem);
-   font-weight: 700;
-   margin-bottom: 16px;
-   line-height: 1.2;
-}
-
-.header h2 {
-   font-size: clamp(1rem, 3vw, 1.4rem);
-   font-weight: 400;
-   opacity: 0.9;
-   margin-bottom: 24px;
-   border: none;
-   padding: 0;
-}
-
-.description {
-   max-width: 800px;
-   margin: 0 auto;
-   font-size: 1.1rem;
-   opacity: 0.95;
-   line-height: 1.5;
-}
-
-.main {
-   padding: 40px 0;
-   min-height: 400px;
-}
-
-.placeholder {
-   text-align: center;
-   padding: 60px 20px;
-   background: var(--white);
-   border-radius: 16px;
-   border: 1px solid var(--border);
-   box-shadow: var(--shadow);
-}
-
-.placeholder p {
-   color: var(--gray);
-   font-size: 1.1rem;
-}
-
-.footer {
-   background: var(--text);
-   color: var(--gray);
-   text-align: center;
-   padding: 24px 0;
-   margin-top: 40px;
-}
-
-.footer p {
-   font-size: 0.9rem;
-}
-
-@media (max-width: 768px) {
-   .header {
-       padding: 40px 20px;
-   }
-   
-   .logo {
-       width: 80px;
-   }
-   
-   .description {
-       font-size: 1rem;
-   }
-   
-   .main {
-       padding: 20px 0;
-   }
-}
+   :root {
+      --primary: #0ea5e9;
+      --primary-dark: #0284c7;
+      --primary-light: #e0f2fe;
+      --secondary: #8b5cf6;
+      --text: #0f172a;
+      --text-light: #334155;
+      --bg: #f8fafc;
+      --white: #ffffff;
+      --gray: #64748b;
+      --gray-light: #e2e8f0;
+      --border: #e2e8f0;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --focus-ring: 0 0 0 3px rgba(14, 165, 233, 0.4);
+      --transition: all 0.3s ease;
+  }
+  
+  * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+  }
+  
+  body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.6;
+      color: var(--text);
+      background: var(--bg);
+      overflow-x: hidden;
+  }
+  
+  /* Фокус для доступності */
+  :focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
+  }
+  
+  /* Контейнер */
+  .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+  }
+  
+  /* ==========================================
+     ШАПКА (HEADER)
+     ========================================== */
+  .header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: var(--white);
+      text-align: center;
+      padding: 80px 20px;
+      position: relative;
+      overflow: hidden;
+  }
+  
+  .header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+      animation: rotate 20s linear infinite;
+  }
+  
+  @keyframes rotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+  }
+  
+  .logo {
+      width: 120px;
+      height: auto;
+      margin-bottom: 24px;
+      border-radius: 20px;
+      box-shadow: var(--shadow-lg);
+      transition: var(--transition);
+  }
+  
+  .logo:hover {
+      transform: scale(1.05);
+  }
+  
+  .header h1 {
+      font-size: clamp(1.8rem, 5vw, 3rem);
+      font-weight: 700;
+      margin-bottom: 16px;
+      line-height: 1.2;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  .header h2 {
+      font-size: clamp(1rem, 3vw, 1.4rem);
+      font-weight: 400;
+      opacity: 0.9;
+      margin-bottom: 24px;
+      border: none;
+      padding: 0;
+  }
+  
+  .description {
+      max-width: 800px;
+      margin: 0 auto;
+      font-size: 1.1rem;
+      opacity: 0.95;
+      line-height: 1.6;
+  }
+  
+  /* ==========================================
+     ОСНОВНИЙ КОНТЕНТ
+     ========================================== */
+  .main {
+      padding: 60px 0;
+  }
+  
+  /* Секції */
+  .section {
+      background: var(--white);
+      margin-bottom: 32px;
+      padding: 32px;
+      border-radius: 24px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border);
+      transition: var(--transition);
+  }
+  
+  .section:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-md);
+  }
+  
+  .section-title {
+      font-size: clamp(1.3rem, 4vw, 1.8rem);
+      margin-bottom: 20px;
+      border-left: 4px solid var(--primary);
+      padding-left: 16px;
+      color: var(--text);
+  }
+  
+  .section-content {
+      color: var(--text-light);
+      line-height: 1.7;
+  }
+  
+  .section-content p {
+      margin-bottom: 16px;
+  }
+  
+  .section-content ul,
+  .section-content ol {
+      margin: 16px 0;
+      padding-left: 24px;
+  }
+  
+  .section-content li {
+      margin-bottom: 8px;
+  }
+  
+  /* Ключові слова */
+  .keywords-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 8px;
+  }
+  
+  .keyword {
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      padding: 8px 16px;
+      border-radius: 40px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      transition: var(--transition);
+  }
+  
+  .keyword:hover {
+      background: var(--primary);
+      color: white;
+      transform: translateY(-2px);
+  }
+  
+  /* Зображення */
+  .figure {
+      margin: 24px 0;
+      text-align: center;
+  }
+  
+  .project-image {
+      max-width: 100%;
+      height: auto;
+      border-radius: 16px;
+      box-shadow: var(--shadow-md);
+      transition: var(--transition);
+  }
+  
+  .project-image:hover {
+      transform: scale(1.01);
+      box-shadow: var(--shadow-lg);
+  }
+  
+  .figcaption {
+      margin-top: 12px;
+      font-size: 0.85rem;
+      color: var(--gray);
+      font-style: italic;
+  }
+  
+  .image-description {
+      margin-top: 16px;
+      text-align: center;
+      font-size: 0.9rem;
+      color: var(--gray);
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+  }
+  
+  /* Контактна картка */
+  .contact-card {
+      background: var(--bg);
+      padding: 24px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+  }
+  
+  .contact-card p {
+      margin-bottom: 12px;
+  }
+  
+  .contact-card a {
+      color: var(--primary);
+      text-decoration: none;
+      transition: var(--transition);
+  }
+  
+  .contact-card a:hover {
+      color: var(--primary-dark);
+      text-decoration: underline;
+  }
+  
+  /* ==========================================
+     ФУТЕР
+     ========================================== */
+  .footer {
+      background: var(--text);
+      color: var(--gray);
+      text-align: center;
+      padding: 40px 0;
+      margin-top: 40px;
+  }
+  
+  .footer p {
+      font-size: 0.85rem;
+      line-height: 1.6;
+      margin-bottom: 8px;
+  }
+  
+  .footer a {
+      color: var(--primary);
+      text-decoration: none;
+  }
+  
+  .footer a:hover {
+      text-decoration: underline;
+  }
+  
+  /* ==========================================
+     АДАПТИВНІСТЬ (RESPONSIVE)
+     ========================================== */
+  
+  /* Планшети (768px - 1024px) */
+  @media (max-width: 1024px) {
+      .container {
+          padding: 0 20px;
+      }
+      
+      .section {
+          padding: 28px;
+      }
+  }
+  
+  /* Мобільні пристрої (до 768px) */
+  @media (max-width: 768px) {
+      .header {
+          padding: 50px 20px;
+      }
+      
+      .logo {
+          width: 90px;
+      }
+      
+      .description {
+          font-size: 1rem;
+      }
+      
+      .main {
+          padding: 40px 0;
+      }
+      
+      .section {
+          padding: 24px;
+          margin-bottom: 24px;
+          border-radius: 20px;
+      }
+      
+      .section-title {
+          font-size: 1.3rem;
+          margin-bottom: 16px;
+      }
+      
+      .keywords-container {
+          gap: 8px;
+      }
+      
+      .keyword {
+          padding: 6px 12px;
+          font-size: 0.75rem;
+      }
+      
+      .contact-card {
+          padding: 20px;
+      }
+      
+      .footer {
+          padding: 30px 20px;
+      }
+  }
+  
+  /* Маленькі телефони (до 480px) */
+  @media (max-width: 480px) {
+      .container {
+          padding: 0 16px;
+      }
+      
+      .header {
+          padding: 40px 16px;
+      }
+      
+      .logo {
+          width: 70px;
+      }
+      
+      .header h1 {
+          font-size: 1.5rem;
+      }
+      
+      .header h2 {
+          font-size: 0.9rem;
+      }
+      
+      .description {
+          font-size: 0.9rem;
+      }
+      
+      .main {
+          padding: 30px 0;
+      }
+      
+      .section {
+          padding: 20px;
+          border-radius: 16px;
+      }
+      
+      .section-title {
+          font-size: 1.2rem;
+          padding-left: 12px;
+      }
+      
+      .section-content {
+          font-size: 0.9rem;
+      }
+      
+      .section-content ul,
+      .section-content ol {
+          padding-left: 20px;
+      }
+      
+      .keywords-container {
+          gap: 6px;
+      }
+      
+      .keyword {
+          padding: 4px 10px;
+          font-size: 0.7rem;
+      }
+      
+      .figure {
+          margin: 16px 0;
+      }
+      
+      .figcaption {
+          font-size: 0.7rem;
+      }
+      
+      .image-description {
+          font-size: 0.8rem;
+      }
+      
+      .contact-card {
+          padding: 16px;
+      }
+      
+      .contact-card p {
+          font-size: 0.85rem;
+      }
+      
+      .footer p {
+          font-size: 0.75rem;
+      }
+  }
+  
+  /* ==========================================
+     АНІМАЦІЇ
+     ========================================== */
+  @keyframes fadeInUp {
+      from {
+          opacity: 0;
+          transform: translateY(30px);
+      }
+      to {
+          opacity: 1;
+          transform: translateY(0);
+      }
+  }
+  
+  .section {
+      animation: fadeInUp 0.5s ease-out forwards;
+      opacity: 0;
+  }
+  
+  .section:nth-child(1) { animation-delay: 0.05s; }
+  .section:nth-child(2) { animation-delay: 0.10s; }
+  .section:nth-child(3) { animation-delay: 0.15s; }
+  .section:nth-child(4) { animation-delay: 0.20s; }
+  .section:nth-child(5) { animation-delay: 0.25s; }
+  .section:nth-child(6) { animation-delay: 0.30s; }
+  .section:nth-child(7) { animation-delay: 0.35s; }
+  .section:nth-child(8) { animation-delay: 0.40s; }
+  .section:nth-child(9) { animation-delay: 0.45s; }
+  
+  /* Скрінрідери */
+  .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border-width: 0;
+  }
+  
+  /* ==========================================
+     ТИПОГРАФІКА
+     ========================================== */
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+  
+  /* Забезпечення гарного відображення на всіх пристроях */
+  html {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+  }
+  
+  /* Стилі для посилань */
+  a {
+      color: var(--primary);
+      text-decoration: none;
+      transition: var(--transition);
+  }
+  
+  a:hover {
+      color: var(--primary-dark);
+  }
+  
+  /* Стилі для списків */
+  ul, ol {
+      margin: 1rem 0;
+      padding-left: 1.5rem;
+  }
+  
+  li {
+      margin-bottom: 0.5rem;
+  }
+  
+  /* Стилі для strong та b */
+  strong, b {
+      color: var(--text);
+      font-weight: 600;
+  }
