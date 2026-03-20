@@ -1,0 +1,86 @@
+<header class="section-header">
+    <h1>📖 Довідник моделей техніки</h1>
+ </header>
+ 
+ <div class="form-grid admin-only" style="margin-bottom: 20px; grid-template-columns: 1fr 1fr; display: none;">
+    <div class="card" style="margin-bottom: 0;">
+        <h3 style="margin-top: 0; margin-bottom: 15px;">Додати / Редагувати позицію</h3>
+        <form id="catalogForm">
+            <input type="hidden" id="editCatId">
+            <div class="form-grid" style="grid-template-columns: 1fr;">
+                <div class="field">
+                    <label>Тип техніки *</label>
+                    <input type="text" id="catType" required placeholder="Напр: Монітор" list="catTypeList">
+                    <datalist id="catTypeList"></datalist>
+                </div>
+                <div class="field">
+                    <label>Модель / Назва *</label>
+                    <input type="text" id="catModel" required placeholder="Напр: Dell UltraSharp 24">
+                </div>
+            </div>
+            <div style="display: flex; gap: 10px; margin-top: 15px;">
+                <button type="submit" id="catSubmitBtn" class="btn-primary" style="flex: 1;">Зберегти</button>
+                <button type="button" id="catCancelBtn" class="btn-secondary" style="display: none; flex: 1;" onclick="window.cancelCatalogEdit()">Скасувати</button>
+            </div>
+        </form>
+    </div>
+ 
+    <div class="card" style="margin-bottom: 0; background-color: #f8fafc; border: 1px dashed var(--border-input);">
+        <h3 style="margin-top: 0; margin-bottom: 15px;">📥 Масовий імпорт довідника</h3>
+        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 15px;">Завантажте CSV файл у форматі: <b>Тип, Модель</b>. Система автоматично відкине дублікати.</p>
+        <div class="field">
+            <input type="file" id="csvFileInput" accept=".csv" style="padding: 10px 0;">
+        </div>
+    </div>
+ </div>
+ 
+ <div class="card">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 15px;">
+        <div style="display: flex; gap: 15px; flex: 1; min-width: 300px;">
+            <div class="field" style="flex: 1;">
+                <select id="catalogFilterType">
+                    <option value="all">Всі типи</option>
+                </select>
+            </div>
+            <div class="field" style="flex: 2;">
+                <input type="text" id="catalogSearchName" placeholder="Пошук моделі..." oninput="window.renderCatalogTable()">
+            </div>
+        </div>
+        <div style="font-weight: 600; color: var(--text-muted);">
+            Всього позицій: <span id="catalogCount">0</span>
+        </div>
+    </div>
+    
+    <div class="table-container">
+        <table id="catalogTable">
+            <thead>
+                <tr>
+                    <th>Тип техніки</th>
+                    <th>Модель / Назва</th>
+                    <th class="actions-col" style="display:none; width: 100px;">Дії</th>
+                </tr>
+            </thead>
+            <tbody id="catalogTableBody">
+                <tr><td colspan="3" style="text-align: center; padding: 40px; color: var(--text-muted);">⏳ Завантаження довідника...</td></tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <!-- ПАГІНАЦІЯ -->
+    <div class="pagination-controls" style="margin-top: 20px; display: flex; justify-content: space-between; align-items: center;">
+        <div style="display: flex; align-items: center; gap: 10px; font-size: 13px;">
+            Показувати по: 
+            <select id="catalogItemsPerPage" onchange="window.changeCatalogItemsPerPage()" style="width: 70px; height: 32px; border-radius: 6px;">
+                <option value="20">20</option>
+                <option value="50" selected>50</option>
+                <option value="100">100</option>
+                <option value="all">Всі</option>
+            </select>
+        </div>
+        <div class="page-info" id="catalogPageInfo" style="font-weight: 600; color: var(--text-dark);">Сторінка 1 з 1</div>
+        <div style="display: flex; gap: 8px;">
+            <button class="btn-secondary" id="catalogPrevPage" onclick="window.changeCatalogPage(-1)" disabled style="padding: 8px 15px;">⬅ Попередня</button>
+            <button class="btn-secondary" id="catalogNextPage" onclick="window.changeCatalogPage(1)" style="padding: 8px 15px;">Наступна ➡</button>
+        </div>
+    </div>
+ </div>

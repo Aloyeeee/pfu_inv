@@ -1,0 +1,82 @@
+<header class="section-header">
+    <h1>💻 Журнал видачі ноутбуків (Для дистанційної роботи)</h1>
+</header>
+
+<div class="form-grid admin-only" style="margin-bottom: 20px; grid-template-columns: 1fr; display: none;">
+    <div class="card" style="margin-bottom: 0;">
+        <h3 style="margin-top: 0; margin-bottom: 15px;">Оформлення Акту приймання-передачі</h3>
+        <form id="laptopsForm">
+            <div class="form-grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                
+                <div style="background: var(--bg-body); padding: 15px; border-radius: 12px; border: 1px solid var(--border-light);">
+                    <h4 style="margin-top: 0; color: var(--text-dark); border-bottom: 1px solid var(--border-light); padding-bottom: 10px;">📤 Відправник (ІТ-відділ)</h4>
+                    <div class="field"><label>Місце видачі (Де видано) *</label><select id="lpLocation" required></select></div>
+                    <div class="field"><label>Хто видав (ПІБ) *</label><input type="text" id="lpUser" required></div>
+                    <div class="field"><label>Управління *</label><select id="lpUserDir" required></select></div>
+                    <div class="field"><label>Відділ *</label><select id="lpUserDept" required disabled></select></div>
+                    <div class="field"><label>Посада *</label><select id="lpUserTitle" required disabled></select></div>
+                </div>
+
+                <div style="background: #f0fdf4; padding: 15px; border-radius: 12px; border: 1px solid #bbf7d0;">
+                    <h4 style="margin-top: 0; color: #16a34a; border-bottom: 1px solid #bbf7d0; padding-bottom: 10px;">📥 Одержувач (Працівник)</h4>
+                    
+                    <div class="field">
+                        <label>Місцезнаходження (Куди видано) *</label>
+                        <select id="lpDestination" required></select>
+                    </div>
+                    
+                    <div class="field" id="lpDestinationOtherWrapper" style="display: none; margin-top: -5px; margin-bottom: 10px;">
+                        <label style="color: #ea580c;">Вкажіть точну адресу або відділ *</label>
+                        <input type="text" id="lpDestinationOther" placeholder="Напр: Домашня адреса або Інша установа" style="border-color: #ea580c;">
+                    </div>
+
+                    <div class="field"><label>Кому видано (ПІБ) *</label><input type="text" id="lpEncryptedFor" required></div>
+                    <div class="field"><label>Управління *</label><select id="lpEncryptedForDir" required></select></div>
+                    <div class="field"><label>Відділ *</label><select id="lpEncryptedForDept" required disabled></select></div>
+                    <div class="field"><label>Посада *</label><select id="lpEncryptedForTitle" required disabled></select></div>
+                </div>
+
+                <div style="background: #eff6ff; padding: 15px; border-radius: 12px; border: 1px solid #bfdbfe;">
+                    <h4 style="margin-top: 0; color: #2563eb; border-bottom: 1px solid #bfdbfe; padding-bottom: 10px;">💻 Обладнання</h4>
+                    
+                    <div class="field" style="position: relative;">
+                        <label>Ноутбук (Автопошук Інв.№) 🔍</label>
+                        <input type="text" id="lpInv" placeholder="Введіть Інв. №..." autocomplete="off" oninput="window.handleLaptopInvInput()" onfocus="window.handleLaptopInvInput()" required>
+                        <div id="lpInvDropdown" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 1px solid var(--border-input); border-radius: 8px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); max-height: 200px; overflow-y: auto; z-index: 1000;"></div>
+                    </div>
+                    <div class="field"><label>Модель Ноутбука</label><input type="text" id="lpModel" required></div>
+                    <div class="field" style="margin-bottom: 20px;"><label>S/N Ноутбука</label><input type="text" id="lpSN"></div>
+
+                    <div class="field" style="position: relative;">
+                        <label>Токен (Автопошук Інв.№) 🔍</label>
+                        <input type="text" id="tkInv" placeholder="Введіть Інв. №..." autocomplete="off" oninput="window.handleTokenInvInput()" onfocus="window.handleTokenInvInput()">
+                        <div id="tkInvDropdown" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 1px solid var(--border-input); border-radius: 8px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); max-height: 200px; overflow-y: auto; z-index: 1000;"></div>
+                    </div>
+                    <div class="field"><label>Модель Токена</label><input type="text" id="tkModel" placeholder="Захищений носій"></div>
+                    <div class="field"><label>S/N Токена</label><input type="text" id="tkSN"></div>
+                </div>
+
+            </div>
+            <button type="submit" class="btn-primary" style="margin-top: 20px; width: 100%; font-size: 16px;">Створити та завантажити Акт</button>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <h3 style="margin-top: 0; margin-bottom: 15px;">Видані ноутбуки (Журнал)</h3>
+    <div class="table-container">
+        <table id="laptopsTable">
+            <thead>
+                <tr>
+                    <th>Дата видачі</th>
+                    <th>Локація (Де / Куди)</th>
+                    <th>Техніка</th>
+                    <th>Кому видано (МВО)</th>
+                    <th>Хто видав (ІТ)</th>
+                    <th class="actions-col" style="display:none;">Дії</th>
+                </tr>
+            </thead>
+            <tbody id="laptopsTableBody"></tbody>
+        </table>
+    </div>
+</div>

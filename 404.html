@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Упс! Помилка | ПФУ Сумська обл.</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8fafc;
+            color: #334155;
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+        }
+        .error-card {
+            background: white;
+            padding: 50px 40px;
+            border-radius: 24px;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05), 0 8px 10px -6px rgba(0,0,0,0.01);
+            max-width: 450px;
+            width: 90%;
+            border-top: 8px solid #059669; /* Фірмовий зелений колір ПФУ */
+        }
+        .error-icon {
+            background: #ecfdf5;
+            color: #059669;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 25px;
+        }
+        .error-icon svg {
+            width: 40px;
+            height: 40px;
+        }
+        h1 {
+            font-size: 28px;
+            font-weight: 800;
+            color: #0f172a;
+            margin: 0 0 10px;
+        }
+        h2 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #ef4444; /* Червоний для коду помилки */
+            margin: 0 0 15px;
+        }
+        p {
+            font-size: 15px;
+            color: #64748b;
+            line-height: 1.6;
+            margin: 0 0 30px;
+        }
+        .btn-primary {
+            display: inline-block;
+            background-color: #059669;
+            color: white;
+            text-decoration: none;
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 16px;
+            transition: background-color 0.2s, transform 0.1s;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .btn-primary:hover {
+            background-color: #047857;
+        }
+        .btn-primary:active {
+            transform: scale(0.98);
+        }
+        .logo-text {
+            margin-top: 30px;
+            font-size: 12px;
+            color: #94a3b8;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="error-card">
+        <div class="error-icon">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+            </svg>
+        </div>
+        
+        <h2 id="errorCode">Помилка (404 / 50X)</h2>
+        <h1 id="errorTitle">От халепа!</h1>
+        <p id="errorDesc">Сторінку, яку ви шукаєте, не знайдено, або система тимчасово недоступна. Можливо, посилання застаріло або сталася помилка на сервері.</p>
+        
+        <a href="/" class="btn-primary">Повернутися на Головну</a>
+        
+        <div class="logo-text">
+            Система обліку ПФУ | Сумська область
+        </div>
+    </div>
+
+    <script>
+        // Невеличкий скрипт, який намагається зрозуміти тип помилки (якщо він переданий в URL)
+        // Наприклад: /404.html?code=403
+        document.addEventListener("DOMContentLoaded", () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const code = urlParams.get('code');
+            
+            const errCodeEl = document.getElementById('errorCode');
+            const errTitleEl = document.getElementById('errorTitle');
+            const errDescEl = document.getElementById('errorDesc');
+
+            if (code === '403') {
+                errCodeEl.innerText = 'Помилка 403: Доступ заборонено';
+                errTitleEl.innerText = 'Немає прав доступу';
+                errDescEl.innerText = 'У вас немає дозволу на перегляд цієї сторінки. Зверніться до адміністратора системи.';
+            } else if (code === '503' || code === '500') {
+                errCodeEl.innerText = `Помилка ${code}: Проблема з сервером`;
+                errTitleEl.innerText = 'Сервер не відповідає';
+                errDescEl.innerText = 'База даних Firebase тимчасово недоступна або перевантажена. Будь ласка, зачекайте кілька хвилин і спробуйте знову.';
+            } else {
+                errCodeEl.innerText = 'Помилка 404';
+                errTitleEl.innerText = 'Сторінку не знайдено';
+                errDescEl.innerText = 'Схоже, такої адреси не існує в нашій системі. Перевірте правильність посилання.';
+            }
+        });
+    </script>
+</body>
+</html>

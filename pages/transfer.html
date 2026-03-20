@@ -1,0 +1,51 @@
+<header class="section-header">
+    <h1>🔄 Журнал переміщень (Акти)</h1>
+</header>
+
+<div class="form-grid admin-only" style="margin-bottom: 20px; grid-template-columns: 1fr 1fr; display: none;">
+    <div class="card" style="margin-bottom: 0;">
+        <h3 style="margin-top: 0; margin-bottom: 15px;">1. Формування Акту переміщення</h3>
+        <form id="transferForm">
+            <div class="form-grid" style="grid-template-columns: 1fr 1fr;">
+                <div class="field"><label>Відправник (Звідки) *</label><select id="trFrom" required></select></div>
+                <div class="field"><label>Одержувач (Куди) *</label><select id="trTo" required></select></div>
+                <div class="field"><label>МВО Відправника (ПІБ) *</label><input type="text" id="trSentBy" required placeholder="Напр: Іваненко І.І."></div>
+                <div class="field"><label>МВО Одержувача (ПІБ) *</label><input type="text" id="trReceivedBy" required placeholder="Напр: Петренко П.П."></div>
+            </div>
+            
+            <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--border-light);">
+                <div class="field" style="position: relative;">
+                    <label>Додати техніку (Автопошук по Відправнику) 🔍</label>
+                    <input type="text" id="trInv" placeholder="Введіть Інв. № або Модель..." oninput="window.handleTransferInvInput()" onfocus="window.handleTransferInvInput()" autocomplete="off">
+                    <div id="trInvDropdown" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 1px solid var(--border-input); border-radius: 8px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); max-height: 200px; overflow-y: auto; z-index: 1000;"></div>
+                </div>
+            </div>
+            
+            <button type="submit" class="btn-primary" style="margin-top: 15px; width: 100%;">Створити та завантажити Акт</button>
+        </form>
+    </div>
+
+    <div class="card" style="margin-bottom: 0;">
+        <h3 style="margin-top: 0; margin-bottom: 15px;">2. Техніка в Акті</h3>
+        <div class="table-container" style="max-height: 250px;">
+            <table id="transferCartTable">
+                <thead><tr><th>Найменування</th><th>Інв. №</th><th>Дія</th></tr></thead>
+                <tbody id="transferCartBody">
+                    <tr><td colspan="3" style="text-align: center; color: var(--text-muted);">Акт порожній</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <h3 style="margin-top: 0; margin-bottom: 15px;">Історія переміщень</h3>
+    <div class="table-container">
+        <table id="inTransitTable">
+            <thead>
+                <tr><th>Дата</th><th>Маршрут</th><th>Обладнання</th><th>Статус</th><th class="actions-col" style="display:none;">Дії</th></tr>
+            </thead>
+            <tbody id="inTransitBody"></tbody>
+        </table>
+    </div>
+</div>

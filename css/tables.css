@@ -1,0 +1,85 @@
+.table-container { 
+   background: var(--bg-card); border-radius: 16px; border: 1px solid var(--border-light); 
+   width: 100%; max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch;
+}
+table { width: 100%; min-width: 600px; border-collapse: collapse; }
+
+/* ДОДАНО: Ресайз колонок як в Excel */
+th { 
+    background-color: #f8fafc; padding: 14px 18px; text-align: left; font-size: 0.75rem; 
+    color: var(--text-muted); text-transform: uppercase; border-bottom: 1px solid var(--border-light); 
+    resize: horizontal; overflow: hidden; position: relative;
+}
+th::after { content: ''; position: absolute; right: 0; top: 25%; height: 50%; width: 2px; background: var(--border-input); opacity: 0.5; cursor: col-resize; }
+th:last-child::after { display: none; }
+
+/* ЗМІНЕНО: Плавне підсвічування клітинок */
+td { padding: 14px 18px; border-bottom: 1px solid var(--border-light); font-size: 0.9rem; transition: background 0.2s; }
+.actions-col { width: 120px; text-align: center; }
+
+/* Сортування */
+th.sortable { cursor: pointer; transition: background-color 0.2s; white-space: nowrap; }
+th.sortable:hover { background-color: #e2e8f0; }
+.sort-icon { font-size: 10px; margin-left: 5px; opacity: 0.5; }
+th.sortable.active .sort-icon { opacity: 1; color: var(--primary); }
+
+/* ДОДАНО: Анімація видалення рядка */
+tr.removing { animation: slideOutLeft 0.4s ease forwards; pointer-events: none; }
+@keyframes slideOutLeft { to { opacity: 0; transform: translateX(-30px); } }
+
+/* ДОДАНО: Красивий порожній стан (Empty State) */
+.empty-state { padding: 60px 20px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.empty-state svg { width: 100px; height: 100px; opacity: 0.5; margin-bottom: 20px; color: var(--text-muted); }
+.empty-state h3 { color: var(--text-dark); margin: 0 0 8px 0; }
+.empty-state p { color: var(--text-muted); margin: 0; font-size: 0.95rem; }
+
+/* Підсвітка рядків */
+.row-no-inv { background-color: #fef2f2; border-left: 4px solid #ef4444; }
+.row-auto-inv { background-color: #faf5ff; border-left: 4px solid #9333ea; }
+.row-no-inv td:first-child, .row-auto-inv td:first-child { padding-left: 14px; }
+.auto-badge { background: #9333ea !important; color: white !important; border: none !important; }
+
+/* Пагінація */
+.pagination-controls { 
+   display: flex; justify-content: space-between; align-items: center; 
+   padding: 15px 20px; background: var(--bg-card); 
+   border: 1px solid var(--border-light); border-top: none; 
+   border-radius: 0 0 8px 8px; flex-wrap: wrap; gap: 10px;
+}
+.pagination-controls select { padding: 6px 12px; height: auto; display: inline-block; width: auto; margin-left: 10px; }
+.pagination-controls .page-info { font-weight: 600; font-size: 14px; color: var(--text-dark); }
+.pagination-controls button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* Темна тема Таблиць */
+body.dark-mode table { border-color: #334155 !important; background-color: #1e293b !important; }
+body.dark-mode th { background-color: #0f172a !important; color: #94a3b8 !important; border-bottom: 2px solid #334155 !important; }
+body.dark-mode td { border-bottom: 1px solid #334155 !important; color: #cbd5e1 !important; }
+body.dark-mode tbody tr:hover td { background-color: rgba(255,255,255,0.02) !important; }
+body.dark-mode th.sortable:hover { background-color: #334155; }
+
+body.dark-mode .row-no-inv { background-color: #450a0a !important; border-left-color: #ef4444 !important; }
+body.dark-mode .row-auto-inv { background-color: #3b0764 !important; border-left-color: #a855f7 !important; }
+
+/* ==========================================
+   АНІМАЦІЯ ПОЯВИ РЯДКІВ (Staggered Fade-In)
+========================================== */
+tbody tr {
+   animation: fadeRowIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+   opacity: 0; transform: translateY(15px);
+}
+
+/* Затримка для перших 10 рядків (каскадний ефект) */
+tbody tr:nth-child(1) { animation-delay: 0.05s; }
+tbody tr:nth-child(2) { animation-delay: 0.10s; }
+tbody tr:nth-child(3) { animation-delay: 0.15s; }
+tbody tr:nth-child(4) { animation-delay: 0.20s; }
+tbody tr:nth-child(5) { animation-delay: 0.25s; }
+tbody tr:nth-child(6) { animation-delay: 0.30s; }
+tbody tr:nth-child(7) { animation-delay: 0.35s; }
+tbody tr:nth-child(8) { animation-delay: 0.40s; }
+tbody tr:nth-child(9) { animation-delay: 0.45s; }
+tbody tr:nth-child(n+10) { animation-delay: 0.50s; } /* Всі інші з'являються разом */
+
+@keyframes fadeRowIn {
+   to { opacity: 1; transform: translateY(0); }
+}

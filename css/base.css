@@ -1,0 +1,903 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; }
+
+:root {
+    /* ОСНОВНІ КОЛЬОРИ - СВІТЛА ТЕМА (БАЗОВА) */
+    --primary: #34d399;           /* Менш яскравий зелений (м'якший) */
+    --primary-hover: #2aa37c;     /* Темніший для ховера */
+    --primary-light: #d1fae5;      /* Дуже світлий зелений */
+    --secondary: #64748b;          /* Сірий */
+    
+    /* САЙДБАР - ТЕМНО-СІРИЙ (як було) */
+    --sidebar-bg: #1e293b;         /* Темно-сірий/синювато-сірий */
+    --sidebar-hover: #334155;       /* Світліший сірий для ховера */
+    --sidebar-text: #f8fafc;        /* Майже білий */
+    
+    /* ФОНИ ТА ТЕКСТ - СВІТЛА ТЕМА */
+    --bg-body: #f8fafc;             /* Світло-сірий фон */
+    --bg-card: #ffffff;              /* Білий для карток */
+    --text-main: #334155;            /* Темно-сірий */
+    --text-dark: #0f172a;            /* Майже чорний */
+    --text-muted: #64748b;           /* Сірий */
+    --border-light: #e2e8f0;         /* Світла межа */
+    --border-input: #cbd5e1;         /* Межа для інпутів */
+    
+    /* СКЛЯНИЙ ЕФЕКТ */
+    --glass-bg: rgba(255, 255, 255, 0.85);
+    --glass-border: rgba(255, 255, 255, 0.4);
+    
+    /* ЛОГІН */
+    --login-gradient-start: #d1fae5;
+    --login-gradient-end: #f8fafc;
+}
+
+/* ТЕМНА ТЕМА - застосовується тільки при додаванні класу dark-mode */
+body.dark-mode {
+    --primary: #10b981;              /* Трохи яскравіший зелений для темної теми */
+    --primary-hover: #059669;        /* Темніший */
+    --primary-light: #064e3b;         /* Темно-зелений */
+    --secondary: #94a3b8;             /* Світліший сірий */
+    
+    --sidebar-bg: #0f172a;            /* Ще темніший сірий */
+    --sidebar-hover: #1e293b;          /* Темно-сірий */
+    --sidebar-text: #f8fafc;           /* Білий */
+    
+    --bg-body: #0f172a;                /* Темно-сірий фон */
+    --bg-card: #1e293b;                 /* Темний для карток */
+    --text-main: #cbd5e1;                /* Світло-сірий */
+    --text-dark: #f8fafc;                /* Майже білий */
+    --text-muted: #94a3b8;               /* Сірий */
+    --border-light: #334155;             /* Темна межа */
+    --border-input: #475569;              /* Темна межа для інпутів */
+    
+    --glass-bg: rgba(30, 41, 59, 0.85);
+    --glass-border: rgba(255, 255, 255, 0.05);
+    
+    --login-gradient-start: #0f172a;
+    --login-gradient-end: #1e293b;
+}
+
+/* За замовчуванням - світла тема */
+html, body {
+    max-width: 100vw; overflow-x: hidden; margin: 0; padding: 0;
+}
+
+body {
+    font-family: 'Inter', sans-serif; 
+    background-color: var(--bg-body); 
+    color: var(--text-main);
+    display: flex; 
+    height: 100vh;
+    scroll-behavior: smooth;
+    transition: background-color 0.3s ease, color 0.2s ease;
+}
+
+/* Скролбар */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-input); border-radius: 10px; }
+
+/* ==========================================
+   КНОПКА ПЕРЕМИКАННЯ ТЕМИ
+========================================== */
+.theme-toggle {
+    background: transparent;
+    border: 1px solid var(--border-light);
+    color: var(--text-main);
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+}
+
+.theme-toggle:hover {
+    background: var(--primary-light);
+    border-color: var(--primary);
+}
+
+.theme-toggle .light-icon,
+.theme-toggle .dark-icon {
+    display: inline-block;
+}
+
+/* За замовчуванням показуємо іконку світлої теми, ховаємо темну */
+.theme-toggle .light-icon {
+    display: inline-block;
+}
+.theme-toggle .dark-icon {
+    display: none;
+}
+
+/* У темному режимі показуємо іконку темної теми, ховаємо світлу */
+body.dark-mode .theme-toggle .light-icon {
+    display: none;
+}
+body.dark-mode .theme-toggle .dark-icon {
+    display: inline-block;
+}
+
+/* ==========================================
+   МОДАЛЬНІ ВІКНА (ВИПРАВЛЕНО)
+========================================== */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(15, 23, 42, 0.5); /* Темно-сірий напівпрозорий */
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    opacity: 0;
+    animation: fadeInModal 0.3s forwards;
+}
+
+.modal-content {
+    background: var(--bg-card);
+    padding: 0;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 1200px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    border: 1px solid var(--border-light);
+    transform: translateY(20px) scale(0.95);
+    animation: popUpModal 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    overflow: hidden;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid var(--border-light);
+    background: var(--bg-body);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.modal-header h2, .modal-header h3 {
+    margin: 0;
+    font-size: 18px;
+    color: var(--text-dark);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.modal-body {
+    padding: 20px;
+    overflow-y: auto;
+    flex-grow: 1;
+}
+
+.modal-footer {
+    padding: 15px 20px;
+    border-top: 1px solid var(--border-light);
+    background: var(--bg-body);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    position: sticky;
+    bottom: 0;
+    z-index: 10;
+}
+
+/* Спеціальні стилі для drilldown модалки */
+#drilldownModal .modal-content {
+    max-width: 1400px;
+}
+
+#drilldownModal .table-container {
+    flex-grow: 1;
+    overflow-y: auto;
+    border-radius: 0;
+    border: none;
+    max-height: calc(90vh - 130px);
+}
+
+#drilldownModal table {
+    min-width: 1200px;
+}
+
+#drilldownModal thead {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+}
+
+#drilldownModal th {
+    background: var(--bg-body);
+    color: var(--text-dark);
+    font-weight: 700;
+    position: sticky;
+    top: 0;
+}
+
+#drilldownModal tbody tr:hover {
+    background: var(--primary-light);
+}
+
+@keyframes fadeInModal {
+    to { opacity: 1; }
+}
+
+@keyframes popUpModal {
+    to { 
+        transform: translateY(0) scale(1); 
+    }
+}
+
+body.modal-open {
+    overflow: hidden !important;
+}
+
+/* ==========================================
+   КНОПКИ
+========================================== */
+button { 
+    border: none; 
+    border-radius: 10px; 
+    font-weight: 600; 
+    cursor: pointer; 
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); 
+    font-family: inherit; 
+}
+button:active { transform: scale(0.96); }
+
+.btn-primary { 
+    background-color: var(--primary); 
+    color: var(--text-dark); 
+    padding: 12px 24px; 
+    box-shadow: 0 4px 10px rgba(52, 211, 153, 0.2); 
+}
+.btn-primary:hover { 
+    background-color: var(--primary-hover); 
+    box-shadow: 0 6px 15px rgba(52, 211, 153, 0.3); 
+    transform: translateY(-1px); 
+}
+
+.btn-secondary { 
+    background-color: var(--bg-card); 
+    color: var(--text-main); 
+    border: 1px solid var(--border-input); 
+    padding: 12px 20px; 
+}
+.btn-secondary:hover { 
+    background-color: var(--primary-light); 
+    border-color: var(--primary); 
+}
+
+.btn-excel { 
+    background-color: #10b981; 
+    color: white; 
+    padding: 12px 20px; 
+}
+.btn-excel:hover { 
+    background-color: #059669; 
+}
+
+.btn-danger {
+    background-color: #ef4444;
+    color: white;
+}
+.btn-danger:hover {
+    background-color: #dc2626;
+}
+
+/* ==========================================
+   ТАБЛИЦІ
+========================================== */
+.table-container { 
+    background: var(--bg-card); 
+    border-radius: 16px; 
+    border: 1px solid var(--border-light); 
+    width: 100%; 
+    max-width: 100%; 
+    overflow-x: auto; 
+    -webkit-overflow-scrolling: touch;
+}
+
+table { 
+    width: 100%; 
+    border-collapse: collapse; 
+}
+
+th { 
+    background: var(--bg-body); 
+    padding: 14px 18px; 
+    text-align: left; 
+    font-size: 0.75rem; 
+    color: var(--text-muted); 
+    text-transform: uppercase; 
+    border-bottom: 2px solid var(--primary); 
+    font-weight: 700;
+}
+
+td { 
+    padding: 14px 18px; 
+    border-bottom: 1px solid var(--border-light); 
+    font-size: 0.9rem; 
+    transition: background 0.2s; 
+}
+
+tbody tr:hover td {
+    background-color: var(--primary-light);
+}
+
+/* Стилі для колонки дій */
+.actions-col {
+    min-width: 280px;
+    white-space: nowrap;
+}
+
+.actions-col button {
+    margin: 0 2px;
+}
+
+/* ==========================================
+   СТОРІНКА АВТОРИЗАЦІЇ
+========================================== */
+.login-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, var(--login-gradient-start) 0%, var(--login-gradient-end) 100%);
+    z-index: 10000;
+    overflow: hidden;
+}
+
+.login-container::before {
+    content: '';
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    background: var(--primary);
+    opacity: 0.2;
+    border-radius: 50%;
+    top: -200px;
+    right: -200px;
+    animation: float 30s infinite ease-in-out;
+}
+
+.login-container::after {
+    content: '';
+    position: absolute;
+    width: 800px;
+    height: 800px;
+    background: var(--secondary);
+    opacity: 0.1;
+    border-radius: 50%;
+    bottom: -300px;
+    left: -300px;
+    animation: floatReverse 35s infinite ease-in-out;
+}
+
+.login-card {
+    position: relative;
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    padding: 50px 40px;
+    border-radius: 40px;
+    width: 90%;
+    max-width: 440px;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--glass-border);
+    animation: loginFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    overflow: hidden;
+}
+
+.login-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 40px;
+}
+
+.logo-icon {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    color: white;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.logo-text {
+    font-size: 1.8rem;
+    font-weight: 800;
+    line-height: 1.3;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* ==========================================
+   ПОЛЯ ВВОДУ
+========================================== */
+.field { 
+    position: relative; 
+    display: flex; 
+    flex-direction: column; 
+    background: var(--bg-card); 
+    border-radius: 10px; 
+    border: 1px solid var(--border-input); 
+    transition: 0.3s; 
+    min-height: 56px;
+    margin-bottom: 5px;
+}
+
+.field:focus-within { 
+    border-color: var(--primary); 
+    box-shadow: 0 0 0 3px var(--primary-light); 
+}
+
+.field label { 
+    position: absolute; 
+    left: 14px; 
+    top: 50%; 
+    transform: translateY(-50%); 
+    font-size: 0.95rem; 
+    color: var(--text-muted); 
+    pointer-events: none; 
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); 
+    margin: 0; 
+    font-weight: 500; 
+    background: transparent;
+    padding: 0;
+    z-index: 1;
+}
+
+.field input, .field select, .field textarea { 
+    width: 100%; 
+    padding: 16px 14px 4px 14px; 
+    height: 56px; 
+    border: none; 
+    background: transparent; 
+    font-size: 0.95rem; 
+    color: var(--text-dark); 
+    font-family: inherit;
+    position: relative;
+    z-index: 2;
+}
+
+.field textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.field input:focus, .field select:focus, .field textarea:focus { 
+    outline: none; 
+}
+
+.field input:focus ~ label, 
+.field input:not(:placeholder-shown) ~ label, 
+.field select:focus ~ label, 
+.field select:has(option:checked) ~ label,
+.field textarea:focus ~ label,
+.field textarea:not(:placeholder-shown) ~ label {
+    top: 8px !important;
+    transform: translateY(0) scale(0.8) !important;
+    font-size: 0.75rem !important;
+    color: var(--primary) !important;
+    font-weight: 700 !important;
+    left: 14px !important;
+}
+
+/* ==========================================
+   АНІМАЦІЇ
+========================================== */
+@keyframes float {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    33% { transform: translate(-80px, 60px) rotate(120deg); }
+    66% { transform: translate(80px, -60px) rotate(240deg); }
+}
+
+@keyframes floatReverse {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    33% { transform: translate(100px, -80px) rotate(-120deg); }
+    66% { transform: translate(-100px, 80px) rotate(-240deg); }
+}
+
+@keyframes loginFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9) translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* ==========================================
+   TOAST ПОВІДОМЛЕННЯ
+========================================== */
+#toastContainer { 
+    position: fixed; 
+    bottom: 30px; 
+    right: 30px; 
+    display: flex; 
+    flex-direction: column; 
+    gap: 10px; 
+    z-index: 9999; 
+    pointer-events: none; 
+}
+.toast { 
+    min-width: 250px; 
+    padding: 16px 20px; 
+    border-radius: 12px; 
+    color: white; 
+    font-weight: 500; 
+    font-size: 0.95rem; 
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    pointer-events: auto; 
+    animation: slideInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; 
+}
+.toast.success { background: var(--primary); color: var(--text-dark); }
+.toast.error { background: #ef4444; }
+.toast.warning { background: #f59e0b; }
+.toast.info { background: var(--secondary); }
+.close-toast { cursor: pointer; font-weight: bold; margin-left: 15px; opacity: 0.7; transition: 0.2s; }
+.close-toast:hover { opacity: 1; }
+@keyframes slideInUp { from { transform: translateY(100px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+/* ==========================================
+   ГЛОБАЛЬНИЙ ПРЕЛОАДЕР
+========================================== */
+#global-preloader {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background: radial-gradient(circle at center, rgba(15, 23, 42, 0.85) 0%, rgba(2, 6, 23, 1) 100%);
+    backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+    z-index: 99999; display: flex; justify-content: center; align-items: center;
+    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.8s;
+}
+
+.preloader-container {
+    position: relative; display: flex; flex-direction: column; align-items: center;
+    transform: translateY(-20px);
+}
+
+.preloader-orbit-outer {
+    position: absolute; top: -70px; left: 50%;
+    width: 140px; height: 140px; margin-left: -70px;
+    border: 2px dashed rgba(52, 211, 153, 0.3);
+    border-radius: 50%;
+    animation: spinRight 15s linear infinite;
+}
+
+.preloader-orbit-inner {
+    position: absolute; top: -45px; left: 50%;
+    width: 90px; height: 90px; margin-left: -45px;
+    border: 3px solid transparent;
+    border-top-color: var(--primary);
+    border-bottom-color: var(--primary-light);
+    border-radius: 50%;
+    box-shadow: 0 0 30px rgba(52, 211, 153, 0.2);
+    animation: spinLeft 2s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+}
+
+.preloader-core {
+    position: relative; top: -20px;
+    width: 40px; height: 40px;
+    background: var(--primary);
+    border-radius: 50%;
+    box-shadow: 0 0 20px var(--primary), inset 0 0 10px rgba(255,255,255,0.8);
+    animation: corePulse 1.5s ease-in-out infinite alternate;
+}
+
+.preloader-text {
+    margin-top: 80px; font-family: 'Inter', sans-serif;
+    font-size: 1.4rem; font-weight: 800; letter-spacing: 3px;
+    text-transform: uppercase;
+    background: linear-gradient(90deg, #64748b 0%, #ffffff 50%, #64748b 100%);
+    background-size: 200% auto;
+    color: transparent;
+    -webkit-background-clip: text;
+    background-clip: text;
+    animation: textShine 2.5s linear infinite;
+}
+
+.preloader-subtext {
+    margin-top: 10px; font-size: 0.85rem; color: var(--primary);
+    font-family: monospace; font-weight: 600; letter-spacing: 1px;
+    animation: blinkTerminal 1s infinite;
+}
+
+@keyframes spinRight { 100% { transform: rotate(360deg); } }
+@keyframes spinLeft { 100% { transform: rotate(-360deg); } }
+@keyframes corePulse { 
+    0% { transform: scale(0.8); box-shadow: 0 0 10px var(--primary); } 
+    100% { transform: scale(1.1); box-shadow: 0 0 40px var(--primary-light), inset 0 0 15px #fff; } 
+}
+@keyframes textShine { to { background-position: 200% center; } }
+@keyframes blinkTerminal { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+/* ==========================================
+   МОБІЛЬНА АДАПТАЦІЯ
+========================================== */
+@media (max-width: 768px) {
+    .modal-content {
+        width: 95%;
+        max-height: 95vh;
+    }
+    
+    #drilldownModal .modal-content {
+        width: 100%;
+        height: 100vh;
+        max-height: 100vh;
+        border-radius: 0;
+    }
+    
+    .modal-header {
+        padding: 15px;
+    }
+    
+    .modal-body {
+        padding: 15px;
+    }
+    
+    .login-card {
+        padding: 30px 25px;
+        border-radius: 30px;
+    }
+    
+    .logo-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 24px;
+    }
+    
+    .logo-text {
+        font-size: 1.4rem;
+    }
+    
+    .toast {
+        min-width: auto;
+        width: calc(100vw - 40px);
+    }
+    
+    .actions-col {
+        min-width: 200px;
+    }
+    
+    .actions-col button {
+        padding: 4px 6px;
+        font-size: 11px;
+    }
+}
+
+/* Додайте в кінець base.css */
+
+/* Стилі для drilldown таблиці */
+#drilldownModal table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 13px;
+}
+
+#drilldownModal th {
+    background: var(--bg-body);
+    color: var(--text-dark);
+    font-weight: 700;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid var(--primary);
+    white-space: nowrap;
+}
+
+#drilldownModal td {
+    border-bottom: 1px solid var(--border-light);
+    vertical-align: middle;
+}
+
+#drilldownModal tbody tr:hover {
+    background: var(--primary-light);
+}
+
+#drilldownModal .status-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+/* Для мобільних */
+@media (max-width: 768px) {
+    #drilldownModal .modal-content {
+        width: 100%;
+        height: 100vh;
+        max-height: 100vh;
+        border-radius: 0;
+    }
+    
+    #drilldownModal table {
+        min-width: 800px;
+    }
+    
+    #drilldownModal .modal-footer {
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+    }
+    
+    #drilldownModal .modal-footer > div:first-child {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+    }
+}
+
+/* Стилі для drilldown модалки */
+#drilldownModal .modal-content {
+    display: flex;
+    flex-direction: column;
+    height: 90vh;
+    max-height: 90vh;
+    padding: 0;
+    overflow: hidden;
+}
+
+#drilldownModal .modal-header {
+    flex-shrink: 0;
+    border-bottom: 1px solid var(--border-light);
+    background: var(--bg-body);
+}
+
+#drilldownModal .modal-footer {
+    flex-shrink: 0;
+    border-top: 1px solid var(--border-light);
+    background: var(--bg-body);
+}
+
+/* Контейнер для скролу таблиці */
+#drilldownModal > div > div:nth-child(2) {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    position: relative;
+}
+
+#drilldownModal > div > div:nth-child(2) > div {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: auto;
+}
+
+/* Стилі таблиці */
+#drilldownModal table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    background: var(--bg-card);
+}
+
+#drilldownModal th {
+    position: sticky;
+    top: 0;
+    background: var(--bg-body);
+    color: var(--text-dark);
+    font-weight: 700;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid var(--primary);
+    white-space: nowrap;
+    z-index: 10;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+#drilldownModal td {
+    border-bottom: 1px solid var(--border-light);
+    padding: 10px 8px;
+    vertical-align: middle;
+}
+
+#drilldownModal tbody tr:hover {
+    background: var(--primary-light);
+}
+
+/* Бейдж статусу */
+#drilldownModal .status-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+/* Інвентарний номер */
+#drilldownModal td:nth-child(5) {
+    font-family: monospace;
+    color: var(--primary);
+}
+
+/* Hostname */
+#drilldownModal td:nth-child(6) {
+    font-family: monospace;
+}
+
+/* ==========================================
+   ДОДАТКОВІ СТИЛІ ДЛЯ СВІТЛОЇ ТЕМИ
+========================================== */
+/* Градієнти для кнопок в світлій темі */
+.btn-primary {
+    background: linear-gradient(135deg, #34d399, #10b981);
+    color: white;
+}
+
+/* Тіні для карток */
+.card {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* Стилі для таблиці в світлій темі */
+table {
+    background: white;
+}
+
+th {
+    background: #f8fafc;
+}
+
+/* Стилі для інпутів */
+.field {
+    background: white;
+}
+
+/* ==========================================
+   ТЕМНА ТЕМА (перевизначення для темного режиму)
+========================================== */
+body.dark-mode .btn-primary {
+    background: linear-gradient(135deg, #10b981, #059669);
+}
+
+body.dark-mode .card {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode table {
+    background: #1e293b;
+}
+
+body.dark-mode th {
+    background: #0f172a;
+}
+
+body.dark-mode .field {
+    background: #1e293b;
+}

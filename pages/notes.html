@@ -1,0 +1,228 @@
+<!-- pages/notes.html - повністю замініть файл -->
+
+<header class="section-header">
+   <h1>📋 Журнал системних приміток</h1>
+</header>
+
+<div class="card">
+   <div class="filters-bar" style="display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; align-items: flex-end;">
+       <div class="field" style="min-width: 200px;">
+           <select id="notesFilterType" onchange="window.onFilterTypeChange()">
+               <option value="all">📋 Всі типи</option>
+               <option value="inventory">📦 Склад</option>
+               <option value="room">🏢 Кабінети</option>
+               <option value="transfer">🔄 Переміщення</option>
+               <option value="laptop">💻 Ноутбуки</option>
+           </select>
+           <label>Тип об'єкта</label>
+       </div>
+       
+       <div class="field" style="min-width: 300px; flex: 1;">
+           <select id="notesFilterObject">
+               <option value="all">📌 Всі об'єкти</option>
+           </select>
+           <label>Конкретний об'єкт</label>
+       </div>
+       
+       <div class="field" style="min-width: 250px; flex: 2;">
+           <input type="text" id="notesSearch" placeholder=" " onkeypress="if(event.key==='Enter') window.applyNotesFilters()">
+           <label>🔍 Пошук за текстом або автором...</label>
+       </div>
+       
+       <div style="display: flex; gap: 10px;">
+           <button class="btn-primary" onclick="window.applyNotesFilters()" style="height: 42px; padding: 0 20px;">🔍 Застосувати фільтри</button>
+           <button class="btn-secondary" onclick="window.clearNotesFilters()" style="height: 42px;">✖ Скинути</button>
+           <button class="btn-excel" onclick="window.exportNotesToExcel()" style="height: 42px;">📥 Експорт Excel</button>
+       </div>
+   </div>
+   
+   <!-- Статистика -->
+   <div class="stats-bar" style="display: flex; gap: 20px; margin-bottom: 20px; padding: 15px; background: var(--bg-body); border-radius: 12px; flex-wrap: wrap;">
+       <div><strong>📊 Всього:</strong> <span id="notesTotalCount">0</span></div>
+       <div><strong>📦 Склад:</strong> <span id="notesInventoryCount">0</span></div>
+       <div><strong>🏢 Кабінети:</strong> <span id="notesRoomsCount">0</span></div>
+       <div><strong>🔄 Переміщення:</strong> <span id="notesTransfersCount">0</span></div>
+       <div><strong>💻 Ноутбуки:</strong> <span id="notesLaptopsCount">0</span></div>
+   </div>
+   
+   <!-- Контейнер для приміток -->
+   <div id="globalNotesList" class="notes-feed"></div>
+</div>
+
+<style>
+.notes-feed {
+   max-height: 600px;
+   overflow-y: auto;
+   padding: 10px 5px;
+   display: flex;
+   flex-direction: column;
+   gap: 15px;
+}
+.note-card {
+   background: var(--bg-card);
+   border: 1px solid var(--border-light);
+   border-radius: 12px;
+   padding: 16px;
+   transition: all 0.2s ease;
+   border-left: 4px solid var(--primary);
+   cursor: pointer;
+   animation: fadeIn 0.3s ease;
+}
+.note-card:hover {
+   box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+   transform: translateY(-2px);
+}
+.note-card.private {
+   border-left-color: #f97316;
+   background: #fef3c7;
+}
+@keyframes fadeIn {
+   from { opacity: 0; transform: translateY(10px); }
+   to { opacity: 1; transform: translateY(0); }
+}
+.note-header {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   margin-bottom: 12px;
+   flex-wrap: wrap;
+   gap: 10px;
+}
+.note-author {
+   display: flex;
+   align-items: center;
+   gap: 8px;
+   flex-wrap: wrap;
+}
+.note-author-name {
+   font-weight: 700;
+   color: var(--primary);
+   font-size: 14px;
+}
+.note-badge {
+   padding: 2px 8px;
+   border-radius: 12px;
+   font-size: 11px;
+   font-weight: 600;
+}
+.note-badge.admin {
+   background: #059669;
+   color: white;
+}
+.note-badge.you {
+   background: #3b82f6;
+   color: white;
+}
+.note-badge.private {
+   background: #f97316;
+   color: white;
+}
+.note-date {
+   color: var(--text-muted);
+   font-size: 12px;
+   display: flex;
+   align-items: center;
+   gap: 8px;
+}
+.note-object-link {
+   display: inline-flex;
+   align-items: center;
+   gap: 8px;
+   background: var(--primary-light);
+   color: var(--primary);
+   padding: 6px 12px;
+   border-radius: 20px;
+   font-size: 12px;
+   font-weight: 600;
+   margin-bottom: 10px;
+   cursor: pointer;
+}
+.note-object-link:hover {
+   background: var(--primary);
+   color: white;
+}
+.note-text {
+   font-size: 14px;
+   line-height: 1.5;
+   margin: 12px 0;
+   padding: 12px;
+   background: var(--bg-body);
+   border-radius: 8px;
+   white-space: pre-wrap;
+}
+.note-context {
+   font-size: 12px;
+   color: var(--text-muted);
+   background: #f8fafc;
+   padding: 8px 12px;
+   border-radius: 6px;
+   margin-top: 8px;
+   border: 1px dashed var(--border-light);
+}
+.note-delete {
+   background: none;
+   border: none;
+   color: #ef4444;
+   cursor: pointer;
+   padding: 4px 8px;
+   border-radius: 4px;
+   font-size: 12px;
+   opacity: 0.6;
+}
+.note-delete:hover {
+   opacity: 1;
+   background: #fee2e2;
+}
+.stats-bar div {
+   padding: 5px 10px;
+   background: white;
+   border-radius: 20px;
+   border: 1px solid var(--border-light);
+   font-size: 13px;
+}
+.stats-bar div span {
+   font-weight: 700;
+   color: var(--primary);
+   font-size: 16px;
+   margin-left: 5px;
+}
+</style>
+
+<script>
+// Глобальні функції для обробників подій
+window.onFilterTypeChange = function() {
+   console.log("Змінено тип фільтра");
+   if (typeof window.updateObjectsFilter === 'function') {
+       window.updateObjectsFilter();
+   }
+};
+
+window.applyNotesFilters = function() {
+   console.log("Застосування фільтрів...");
+   
+   const container = document.getElementById('globalNotesList');
+   if (container) {
+       container.style.opacity = '0.5';
+   }
+   
+   if (typeof window.filterGlobalNotes === 'function') {
+       window.filterGlobalNotes();
+   }
+   
+   setTimeout(() => {
+       if (container) {
+           container.style.opacity = '1';
+       }
+   }, 300);
+};
+
+// Ініціалізація при завантаженні
+document.addEventListener('DOMContentLoaded', function() {
+   console.log("Сторінка приміток завантажена");
+   
+   // Завантажуємо дані
+   if (typeof window.loadAllNotes === 'function') {
+       window.loadAllNotes();
+   }
+});
+</script>

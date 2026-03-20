@@ -1,0 +1,20 @@
+<!-- components/sidebar.html -->
+<div class="sidebar-header">
+   <span>⚙️ ПФУ Сумська</span>
+   <button id="closeMenuBtn" class="close-menu-btn">✕</button>
+</div>
+<nav>
+   <div class="nav-item" onclick="window.showTab('dashboard')">📊 Дашборд</div>
+   <div class="nav-item" onclick="window.showTab('inventory')">📦 Склад</div>
+   <div class="nav-item" onclick="window.showTab('rooms')">🏢 Кабінети</div>
+   <div class="nav-item" onclick="window.showTab('transfer')">🔄 Переміщення</div>
+   <div class="nav-item" onclick="window.showTab('refill')">🖨️ Картриджі</div>
+   <div class="nav-item" onclick="window.showTab('laptops')">💻 Ноутбуки</div>
+   <div class="nav-item" onclick="window.showTab('employee')">👤 Працівники</div>
+   <div class="nav-item" onclick="window.showTab('catalog')">📖 Довідник</div>
+   <div class="nav-item" onclick="window.showTab('audit')">📜 Аудит</div>
+   <!-- НОВИЙ ПУНКТ МЕНЮ -->
+   <div class="nav-item" onclick="window.showTab('notes')">📋 Примітки</div> <!-- <- ДОДАЙТЕ ЦЕЙ РЯДОК -->
+   <div class="nav-item admin-only" onclick="window.showTab('settings')" style="margin-top: 20px;">⚙️ Налаштування</div>
+   <div class="nav-item" onclick="window.logout()" style="color: #ef4444;">🚪 Вихід</div>
+</nav>

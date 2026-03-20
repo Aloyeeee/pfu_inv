@@ -1,0 +1,577 @@
+/* refill.css - окремі стилі для модуля картриджів */
+
+/* ========== ОСНОВНІ КАРТКИ ========== */
+.refill-card {
+   background: white;
+   border-radius: 20px;
+   padding: 24px;
+   margin-bottom: 24px;
+   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+   border: 1px solid #e2e8f0;
+   transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.refill-card:hover {
+   transform: translateY(-2px);
+   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.refill-card-header {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   margin-bottom: 20px;
+   padding-bottom: 15px;
+   border-bottom: 2px solid #f1f5f9;
+}
+
+.refill-card-header h3 {
+   margin: 0;
+   font-size: 18px;
+   color: #0f172a;
+   display: flex;
+   align-items: center;
+   gap: 8px;
+}
+
+.refill-card-header h3 span {
+   font-size: 24px;
+}
+
+/* ========== СТИЛІ ДЛЯ ВКЛАДОК ========== */
+.refill-tabs {
+   display: flex;
+   gap: 10px;
+   margin-bottom: 30px;
+   border-bottom: 2px solid #e2e8f0;
+   padding-bottom: 10px;
+   flex-wrap: wrap;
+}
+
+.refill-tab-btn {
+   padding: 12px 28px;
+   background: transparent;
+   border: none;
+   border-radius: 30px;
+   font-size: 15px;
+   font-weight: 600;
+   color: #64748b;
+   cursor: pointer;
+   transition: all 0.2s;
+   display: flex;
+   align-items: center;
+   gap: 8px;
+}
+
+.refill-tab-btn:hover {
+   color: #10b981;
+   background: #f0fdf4;
+}
+
+.refill-tab-btn.active {
+   color: white;
+   background: linear-gradient(135deg, #10b981, #059669);
+   box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
+}
+
+.refill-tab-content {
+   display: none;
+   animation: fadeIn 0.3s ease;
+}
+
+.refill-tab-content.active {
+   display: block;
+}
+
+@keyframes fadeIn {
+   from { opacity: 0; transform: translateY(10px); }
+   to { opacity: 1; transform: translateY(0); }
+}
+
+/* ========== СІТКИ ТА ФОРМИ ========== */
+.refill-form-grid {
+   display: grid;
+   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+   gap: 20px;
+   margin-bottom: 20px;
+}
+
+.refill-form-row {
+   display: flex;
+   gap: 20px;
+   margin-bottom: 20px;
+   flex-wrap: wrap;
+}
+
+.refill-form-group {
+   flex: 1;
+   min-width: 200px;
+}
+
+.refill-form-group.full-width {
+   flex: 0 0 100%;
+}
+
+/* ========== ПОЛЯ ВВЕДЕННЯ ========== */
+.refill-field {
+   position: relative;
+   margin-bottom: 0;
+}
+
+.refill-field input,
+.refill-field select,
+.refill-field textarea {
+   width: 100%;
+   padding: 16px 14px 4px 14px;
+   height: 56px;
+   border: 2px solid #e2e8f0;
+   border-radius: 16px;
+   background: #f8fafc;
+   font-size: 15px;
+   transition: all 0.3s ease;
+   box-sizing: border-box;
+}
+
+.refill-field textarea {
+   height: auto;
+   min-height: 80px;
+   padding-top: 24px;
+   resize: vertical;
+}
+
+.refill-field label {
+   position: absolute;
+   left: 16px;
+   top: 50%;
+   transform: translateY(-50%);
+   font-size: 14px;
+   color: #64748b;
+   pointer-events: none;
+   transition: all 0.3s ease;
+   background: transparent;
+   padding: 0 4px;
+   font-weight: 500;
+}
+
+.refill-field textarea ~ label {
+   top: 28px;
+}
+
+.refill-field input:focus,
+.refill-field select:focus,
+.refill-field textarea:focus {
+   outline: none;
+   border-color: #10b981;
+   background: white;
+   box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+}
+
+.refill-field input:focus ~ label,
+.refill-field input:not(:placeholder-shown) ~ label,
+.refill-field select:focus ~ label,
+.refill-field select:has(option:checked) ~ label,
+.refill-field textarea:focus ~ label,
+.refill-field textarea:not(:placeholder-shown) ~ label {
+   top: 8px;
+   transform: translateY(0) scale(0.85);
+   color: #10b981;
+   font-weight: 600;
+   background: white;
+   padding: 0 8px;
+}
+
+/* ========== КНОПКИ ========== */
+.refill-btn {
+   padding: 12px 24px;
+   border: none;
+   border-radius: 30px;
+   font-weight: 600;
+   font-size: 14px;
+   cursor: pointer;
+   transition: all 0.3s ease;
+   display: inline-flex;
+   align-items: center;
+   justify-content: center;
+   gap: 8px;
+   white-space: nowrap;
+}
+
+.refill-btn-primary {
+   background: linear-gradient(135deg, #10b981, #059669);
+   color: white;
+   box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.3);
+}
+
+.refill-btn-primary:hover {
+   transform: translateY(-2px);
+   box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.4);
+}
+
+.refill-btn-secondary {
+   background: white;
+   color: #334155;
+   border: 2px solid #e2e8f0;
+}
+
+.refill-btn-secondary:hover {
+   background: #f8fafc;
+   border-color: #94a3b8;
+}
+
+.refill-btn-excel {
+   background: linear-gradient(135deg, #22c55e, #16a34a);
+   color: white;
+}
+
+.refill-btn-danger {
+   background: linear-gradient(135deg, #ef4444, #dc2626);
+   color: white;
+}
+
+/* ========== ТАБЛИЦІ ========== */
+.refill-table-container {
+   overflow-x: auto;
+   border-radius: 20px;
+   border: 1px solid #e2e8f0;
+   background: white;
+}
+
+.refill-table {
+   width: 100%;
+   border-collapse: collapse;
+   font-size: 14px;
+}
+
+.refill-table th {
+   background: #f8fafc;
+   padding: 16px 12px;
+   font-weight: 600;
+   color: #475569;
+   text-align: left;
+   border-bottom: 2px solid #e2e8f0;
+   white-space: nowrap;
+}
+
+.refill-table td {
+   padding: 16px 12px;
+   border-bottom: 1px solid #e2e8f0;
+   vertical-align: middle;
+}
+
+.refill-table tbody tr {
+   transition: background 0.2s ease;
+}
+
+.refill-table tbody tr:hover {
+   background: #f8fafc;
+}
+
+/* ========== БЕЙДЖІ СТАТУСІВ ========== */
+.refill-status-badge {
+   display: inline-block;
+   padding: 6px 14px;
+   border-radius: 30px;
+   font-size: 12px;
+   font-weight: 600;
+   color: white;
+   text-align: center;
+   min-width: 100px;
+}
+
+.refill-status-in-use { background: #10b981; }
+.refill-status-in-stock { background: #3b82f6; }
+.refill-status-for-refill { background: #f97316; }
+.refill-status-refilling { background: #8b5cf6; }
+.refill-status-broken { background: #ef4444; }
+.refill-status-write-off { background: #64748b; }
+
+/* ========== СІТКА ЗАПАСІВ ========== */
+.refill-buildings-grid {
+   display: grid;
+   gap: 24px;
+}
+
+.refill-building-card {
+   background: white;
+   border-radius: 20px;
+   border: 1px solid #e2e8f0;
+   overflow: hidden;
+}
+
+.refill-building-header {
+   background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+   padding: 20px;
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   flex-wrap: wrap;
+   gap: 15px;
+   border-bottom: 1px solid #e2e8f0;
+}
+
+.refill-building-header h3 {
+   margin: 0;
+   font-size: 18px;
+   color: #0f172a;
+   display: flex;
+   align-items: center;
+   gap: 8px;
+}
+
+.refill-building-stats {
+   display: flex;
+   gap: 10px;
+   flex-wrap: wrap;
+}
+
+.refill-stat-badge {
+   padding: 6px 14px;
+   border-radius: 30px;
+   font-size: 12px;
+   font-weight: 600;
+   color: white;
+}
+
+.refill-stat-working { background: #10b981; }
+.refill-stat-problem { background: #f97316; }
+.refill-stat-total { background: #64748b; }
+
+.refill-models-grid {
+   display: grid;
+   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+   gap: 15px;
+   padding: 20px;
+}
+
+.refill-model-card {
+   background: #f8fafc;
+   border: 1px solid #e2e8f0;
+   border-radius: 16px;
+   padding: 15px;
+   transition: all 0.3s ease;
+}
+
+.refill-model-card:hover {
+   transform: translateY(-2px);
+   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.refill-model-header {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   margin-bottom: 15px;
+   padding-bottom: 10px;
+   border-bottom: 1px dashed #cbd5e1;
+}
+
+.refill-model-count {
+   background: #d1fae5;
+   color: #10b981;
+   padding: 4px 10px;
+   border-radius: 20px;
+   font-size: 12px;
+   font-weight: 600;
+}
+
+.refill-model-stats {
+   display: grid;
+   grid-template-columns: 1fr 1fr;
+   gap: 10px;
+   margin-bottom: 15px;
+}
+
+.refill-stat-cell {
+   background: white;
+   padding: 10px;
+   border-radius: 12px;
+   text-align: center;
+   border: 1px solid #e2e8f0;
+}
+
+.refill-stat-number {
+   font-size: 20px;
+   font-weight: 700;
+   margin-bottom: 4px;
+}
+
+.refill-stat-number.in-use { color: #10b981; }
+.refill-stat-number.in-stock { color: #3b82f6; }
+.refill-stat-number.refill { color: #f97316; }
+.refill-stat-number.defective { color: #ef4444; }
+
+.refill-stat-label {
+   font-size: 11px;
+   color: #64748b;
+}
+
+/* ========== МОДАЛЬНІ ВІКНА ========== */
+.refill-modal-overlay {
+   display: none;
+   position: fixed;
+   top: 0;
+   left: 0;
+   right: 0;
+   bottom: 0;
+   background: rgba(0, 0, 0, 0.5);
+   backdrop-filter: blur(4px);
+   align-items: center;
+   justify-content: center;
+   z-index: 10000;
+}
+
+.refill-modal-content {
+   background: white;
+   border-radius: 24px;
+   max-width: 500px;
+   width: 90%;
+   max-height: 90vh;
+   overflow-y: auto;
+   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.refill-modal-header {
+   padding: 20px 24px;
+   border-bottom: 1px solid #e2e8f0;
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   position: sticky;
+   top: 0;
+   background: white;
+   border-radius: 24px 24px 0 0;
+}
+
+.refill-modal-header h2 {
+   margin: 0;
+   font-size: 20px;
+   color: #0f172a;
+}
+
+.refill-modal-close {
+   background: none;
+   border: none;
+   font-size: 24px;
+   cursor: pointer;
+   color: #64748b;
+   padding: 4px 8px;
+   border-radius: 8px;
+}
+
+.refill-modal-close:hover {
+   background: #fee2e2;
+   color: #ef4444;
+}
+
+.refill-modal-body {
+   padding: 24px;
+}
+
+.refill-modal-actions {
+   display: flex;
+   gap: 12px;
+   justify-content: flex-end;
+   margin-top: 24px;
+}
+
+/* ========== ІНЛАЙН-ФОРМИ ========== */
+.refill-inline-form {
+   border-left: 4px solid #10b981;
+   background: #f8fafc;
+   margin-bottom: 20px;
+}
+
+.refill-info-box {
+   background: white;
+   padding: 16px;
+   border-radius: 16px;
+   margin-bottom: 20px;
+   border: 1px solid #e2e8f0;
+   font-weight: 500;
+   color: #0f172a;
+}
+
+/* ========== СТАНИ ========== */
+.refill-loading-state,
+.refill-empty-state,
+.refill-error-state {
+   text-align: center;
+   padding: 60px 20px;
+   color: #64748b;
+}
+
+.refill-empty-icon {
+   font-size: 48px;
+   margin-bottom: 15px;
+   opacity: 0.5;
+}
+
+.refill-spinner {
+   width: 40px;
+   height: 40px;
+   border: 3px solid #e2e8f0;
+   border-top-color: #10b981;
+   border-radius: 50%;
+   animation: spin 1s linear infinite;
+   margin: 0 auto 15px;
+}
+
+@keyframes spin {
+   to { transform: rotate(360deg); }
+}
+
+/* ========== ЧЕКБОКСИ ========== */
+.refill-checkbox {
+   width: 20px;
+   height: 20px;
+   cursor: pointer;
+   accent-color: #10b981;
+}
+
+/* ========== АДАПТИВНІСТЬ ========== */
+@media (max-width: 768px) {
+   .refill-tab-btn {
+       padding: 10px 20px;
+       font-size: 14px;
+   }
+   
+   .refill-form-row {
+       flex-direction: column;
+       gap: 15px;
+   }
+   
+   .refill-form-group {
+       min-width: 100%;
+   }
+   
+   .refill-models-grid {
+       grid-template-columns: 1fr;
+   }
+   
+   .refill-building-header {
+       flex-direction: column;
+       align-items: flex-start;
+   }
+   
+   .refill-btn {
+       width: 100%;
+   }
+}
+
+@media (max-width: 480px) {
+   .refill-card {
+       padding: 16px;
+   }
+   
+   .refill-table th,
+   .refill-table td {
+       padding: 12px 8px;
+       font-size: 13px;
+   }
+   
+   .refill-status-badge {
+       min-width: 80px;
+       padding: 4px 8px;
+       font-size: 11px;
+   }
+}

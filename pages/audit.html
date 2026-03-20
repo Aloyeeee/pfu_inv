@@ -1,0 +1,26 @@
+<header class="section-header">
+   <h1>📜 Журнал аудиту (Дії користувачів)</h1>
+</header>
+
+<div class="card">
+   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+       <p style="margin: 0; font-size: 13px; color: var(--text-muted);">У цьому розділі фіксуються всі зміни в базі даних (хто і коли вніс зміну).</p>
+       <button class="btn-excel" onclick="window.exportTableToExcel('auditTable', 'Audit_Log')" style="height: 38px;">📥 Завантажити звіт</button>
+   </div>
+   
+   <div class="table-container" style="max-height: 600px; overflow-y: auto;">
+       <table id="auditTable">
+           <thead style="position: sticky; top: 0; background: #f8fafc; z-index: 10; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+               <tr>
+                   <th style="width: 150px;">Дата та час</th>
+                   <th style="width: 200px;">Користувач (Email)</th>
+                   <th style="width: 150px;">Модуль</th>
+                   <th>Деталі дії</th>
+               </tr>
+           </thead>
+           <tbody id="auditTableBody">
+               <tr><td colspan="4" style="text-align: center; color: var(--text-muted); padding: 20px;">Завантаження історії...</td></tr>
+           </tbody>
+       </table>
+   </div>
+</div>

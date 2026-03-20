@@ -1,0 +1,220 @@
+/* ==========================================================================
+   АДАПТИВ ДЛЯ ПЛАНШЕТІВ ТА МОБІЛЬНИХ ПРИСТРОЇВ (< 992px)
+   ========================================================================== */
+   body:has(.modal-overlay[style*="display: flex"]) {
+      overflow: hidden !important;
+  }
+   @media (max-width: 992px) {
+      /* БІЧНА ПАНЕЛЬ (САЙДБАР) ХОВАЄТЬСЯ */
+      .sidebar { 
+          position: fixed; top: 0; left: 0; bottom: 0; 
+          transform: translateX(-100%); width: 280px; max-width: 85vw; 
+          z-index: 2000; box-shadow: 10px 0 30px rgba(0,0,0,0.5);
+      }
+      .sidebar.open { transform: translateX(0); }
+      .close-menu-btn { display: block; }
+      
+      /* МОБІЛЬНА ШАПКА З'ЯВЛЯЄТЬСЯ */
+      .mobile-header { 
+          display: flex; margin: -20px -20px 20px -20px; padding: 15px 20px;
+          background: var(--bg-card); box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+          position: sticky; top: 0; z-index: 1000;
+      }
+      body.dark-mode .mobile-header { background: #0f172a; border-bottom: 1px solid #334155; }
+  
+      /* ГОЛОВНА ОБЛАСТЬ */
+      .main-content { width: 100vw; margin-left: 0; padding: 20px; }
+      .section-header { flex-direction: column; align-items: flex-start; gap: 15px; margin-bottom: 20px;}
+      .section-header h1 { font-size: 1.4rem; }
+      .card { padding: 20px; }
+      
+      /* ФОРМИ СТАЮТЬ В ОДНУ КОЛОНКУ */
+      .form-grid, .form-grid-wide { grid-template-columns: 1fr; gap: 15px; }
+      .dashboard-grid { grid-template-columns: 1fr; }
+      .specs-grid {
+      grid-template-columns: 1fr !important;
+      gap: 10px !important;
+  }
+  }
+  
+  /* ==========================================================================
+     УЛЬТРА-АДАПТИВ (ДЛЯ СМАРТФОНІВ < 768px) - БЕЗ ГОРИЗОНТАЛЬНОГО СКРОЛУ
+     ========================================================================== */
+  
+  @media (max-width: 768px) {
+      html, body { overflow-x: hidden !important; width: 100vw !important; }
+      
+      .main-content { 
+          padding: 10px !important; 
+          padding-bottom: calc(80px + env(safe-area-inset-bottom)) !important; 
+      }
+      
+      .card { padding: 15px !important; border-radius: 16px !important; margin-bottom: 15px !important; }
+  
+      /* --- МАГІЯ: ТАБЛИЦІ ПЕРЕТВОРЮЮТЬСЯ НА КАРТКИ (БЕЗ СКРОЛУ) --- */
+      .table-container { 
+          background: transparent !important; 
+          border: none !important; 
+          box-shadow: none !important; 
+          padding: 0 !important; 
+          overflow: hidden !important; /* Блокуємо скрол */
+      }
+      
+      table, thead, tbody, th, td, tr { 
+          display: block; /* Знімаємо табличну структуру */
+          width: 100%; 
+          min-width: 0 !important; /* Вимикаємо мінімальну ширину */
+      }
+      
+      thead tr { 
+          display: none; /* Ховаємо шапку таблиці */
+      }
+      
+      tbody tr { 
+          margin-bottom: 15px; 
+          border: 1px solid var(--border-light); 
+          border-radius: 12px; 
+          background: var(--bg-card); 
+          padding: 12px; 
+          box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+          position: relative;
+      }
+      
+      td { 
+          display: flex; 
+          flex-direction: column; /* Підпис зверху, значення знизу */
+          align-items: flex-start; 
+          text-align: left; 
+          border-bottom: 1px dashed var(--border-light) !important; 
+          padding: 8px 0 !important; 
+      }
+      
+      td:last-child { border-bottom: none !important; padding-bottom: 0 !important; }
+      
+      /* Дістаємо назви колонок з атрибута data-label і робимо з них підписи */
+      td::before { 
+          content: attr(data-label); 
+          font-size: 11px; 
+          text-transform: uppercase; 
+          color: var(--primary); 
+          font-weight: 700; 
+          margin-bottom: 4px;
+          letter-spacing: 0.05em;
+      }
+      
+      /* Якщо це колонка з кнопками, показуємо їх у рядок */
+      .actions-col { 
+          display: flex !important; 
+          flex-direction: row !important; 
+          gap: 10px; 
+          margin-top: 5px;
+      }
+      .actions-col::before { display: none; /* Приховуємо підпис для кнопок */ }
+      
+      /* Темна тема для табличних карток */
+      body.dark-mode tbody tr { background: #1e293b; border-color: #334155; }
+      body.dark-mode td { border-bottom-color: #334155 !important; }
+  
+      /* --- ЗРУЧНІ ТАЧ-ЕЛЕМЕНТИ (48px) --- */
+      input, select { 
+          height: 48px !important; 
+          font-size: 16px !important; 
+          padding: 0 15px !important; 
+          border-radius: 12px !important; 
+      }
+      
+      .btn-primary, .btn-secondary, .btn-excel, .btn-danger, button[type="submit"] { 
+          height: 48px !important; 
+          width: 100% !important; 
+          font-size: 15px !important; 
+          border-radius: 12px !important; 
+          margin-bottom: 8px !important; 
+          justify-content: center;
+      }
+      
+      .btn-primary:active, .btn-secondary:active, .nav-item:active { 
+          transform: scale(0.97) !important; 
+          transition: transform 0.1s ease-out !important; 
+      }
+  
+      /* --- МОДАЛЬНІ ВІКНА (ВИТЯГАЮТЬСЯ ЗНИЗУ) --- */
+      .modal-overlay { 
+          align-items: flex-end !important; 
+          padding: 0 !important; 
+          background: rgba(15, 23, 42, 0.5) !important; 
+          backdrop-filter: blur(8px) !important; 
+          -webkit-backdrop-filter: blur(8px) !important; 
+      }
+      
+      .modal-content { 
+          width: 100vw !important; 
+          max-width: 100vw !important; 
+          max-height: 85vh !important; 
+          margin: 0 !important; 
+          border-radius: 24px 24px 0 0 !important; 
+          padding: 25px 20px !important; 
+          padding-bottom: calc(25px + env(safe-area-inset-bottom)) !important; 
+          animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important; 
+          overflow-y: auto;
+      }
+      
+      .modal-content::before { 
+          content: ''; display: block; width: 40px; height: 5px; 
+          background-color: #cbd5e1; border-radius: 10px; margin: -10px auto 20px auto; 
+      }
+      body.dark-mode .modal-content::before { background-color: #475569; }
+  
+      @keyframes slideUp { from { transform: translateY(100%); opacity: 0.5; } to { transform: translateY(0); opacity: 1; } }
+  
+      /* --- ДАШБОРД ТА АВТОПІДКАЗКИ --- */
+      .dashboard-cards { grid-template-columns: 1fr 1fr; gap: 10px; }
+      .stat-card { padding: 15px; }
+      .stat-card .number { font-size: 2rem; }
+  
+      /* --- ЛИПКІ КНОПКИ ЗБЕРЕЖЕННЯ --- */
+      #employeeSearchForm button[type="submit"], 
+      #roomAddForm > div:last-child button[type="submit"],
+      #inventoryForm > div:last-child button[type="submit"] { 
+          position: sticky !important; 
+          bottom: calc(15px + env(safe-area-inset-bottom)) !important; 
+          z-index: 100 !important; margin-top: 20px !important; 
+          box-shadow: 0 10px 25px rgba(5, 150, 105, 0.4) !important; 
+      }
+  
+      /* --- ПАГІНАЦІЯ --- */
+      .pagination-controls { flex-direction: column !important; gap: 15px !important; padding: 15px !important; border-radius: 12px !important; }
+      .pagination-controls > div { width: 100%; display: flex; flex-direction: column; text-align: center; }
+      .pagination-controls > div:last-child { flex-direction: row !important; justify-content: space-between !important; gap: 10px; }
+      .pagination-controls button { flex: 1 !important; margin: 0 !important; }
+  }
+  /* Спеціальні стилі для логіну на мобільних */
+@media (max-width: 768px) {
+    .login-container {
+        padding: 20px;
+        align-items: flex-start;
+        padding-top: 15vh;
+    }
+    
+    .login-card {
+        width: 100%;
+        max-width: 100%;
+        margin: 0;
+        animation: mobileLoginFadeIn 0.5s ease-out;
+    }
+    
+    @keyframes mobileLoginFadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .login-card button[type="submit"] {
+        height: 52px;
+        font-size: 1rem;
+    }
+}

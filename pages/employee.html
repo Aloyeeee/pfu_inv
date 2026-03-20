@@ -1,0 +1,66 @@
+<header class="section-header">
+   <h1>👤 Профіль працівника (МВО / Користувач)</h1>
+   <div id="employeeActions" style="display: none; gap: 10px;">
+       <button class="btn-secondary" onclick="window.printClearanceSheet()">🖨️ Друк обхідного (PDF)</button>
+       <button class="btn-excel" onclick="window.exportEmployeeToExcel()">📥 Завантажити список (Excel)</button>
+   </div>
+</header>
+
+<div class="card">
+   <form id="employeeSearchForm" onsubmit="event.preventDefault(); window.searchEmployee();">
+       <div class="form-grid" style="grid-template-columns: 1fr auto; align-items: end;">
+           <div class="field" style="position: relative;">
+               <label>Пошук за ПІБ (Користувач кабінету або МВО)</label>
+               <input type="text" id="empSearchName" placeholder="Введіть ПІБ..." autocomplete="off" oninput="window.handleEmpNameInput()" onfocus="window.handleEmpNameInput()">
+               <div id="empNameDropdown" style="display: none; position: absolute; top: 100%; left: 0; width: 100%; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 0 0 8px 8px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); max-height: 250px; overflow-y: auto; z-index: 1000;"></div>
+           </div>
+           <button type="submit" class="btn-primary" style="height: 48px; padding: 0 30px;">🔍 Шукати</button>
+       </div>
+   </form>
+</div>
+
+<div id="empStatsContainer" style="display: none; gap: 15px; margin-bottom: 20px;">
+   <div class="card" style="flex: 1; border-left: 4px solid var(--primary);">
+       <h3 style="margin:0; font-size:14px; color:var(--text-muted);">Всього одиниць техніки</h3>
+       <p style="margin:5px 0 0; font-size:24px; font-weight:700; color:var(--text-dark);" id="empTotalItems">0</p>
+   </div>
+   <div class="card" style="flex: 1; border-left: 4px solid #8b5cf6;">
+       <h3 style="margin:0; font-size:14px; color:var(--text-muted);">Загальна вартість майна</h3>
+       <p style="margin:5px 0 0; font-size:24px; font-weight:700; color:#8b5cf6;" id="empTotalPrice">0.00 ₴</p>
+   </div>
+</div>
+
+<div class="card" style="padding: 0;">
+   <div class="table-container" style="border: none;">
+       <table id="empTable" style="margin: 0; border: none;">
+        <thead style="background: #f8fafc;">
+            <tr>
+                <th data-sort="location" style="cursor: pointer;">Локація / Кабінет <span class="sort-icon">↕️</span></th>
+                <th data-sort="model" style="cursor: pointer;">Обладнання / Модель <span class="sort-icon">↕️</span></th>
+                <th data-sort="inv" style="cursor: pointer;">Інв. № / Серійник <span class="sort-icon">↕️</span></th>
+                <th data-sort="price" style="cursor: pointer; text-align:right;">Вартість (₴) <span class="sort-icon">↕️</span></th>
+                <th data-sort="status" style="cursor: pointer; text-align:center;">Статус <span class="sort-icon">↕️</span></th>
+            </tr>
+        </thead>
+           <tbody id="empTableBody">
+               <tr><td colspan="5" style="text-align:center; padding: 30px; color:#64748b;">Введіть ПІБ та натисніть "Шукати"</td></tr>
+           </tbody>
+       </table>
+   </div>
+   
+   <div class="pagination-controls" id="empPagination" style="display: none;">
+       <div>
+           <label>Показувати по:</label>
+           <select id="empItemsPerPage" onchange="window.changeEmpItemsPerPage()">
+               <option value="10">10 записів</option>
+               <option value="25">25 записів</option>
+               <option value="all">Всі записи</option>
+           </select>
+       </div>
+       <div id="empPageInfo" style="font-weight: 500;">Сторінка 1</div>
+       <div>
+           <button class="btn-secondary" id="empPrevPage" onclick="window.changeEmpPage(-1)">Попередня</button>
+           <button class="btn-secondary" id="empNextPage" onclick="window.changeEmpPage(1)">Наступна</button>
+       </div>
+   </div>
+</div>

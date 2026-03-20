@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Виправлення типів та моделей</title>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f1f5f9;
+            margin: 0;
+            padding: 40px;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            max-width: 800px;
+            width: 100%;
+        }
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1 {
+            margin-top: 0;
+            color: #0f172a;
+            font-size: 24px;
+        }
+        button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background: #2563eb;
+        }
+        button:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+        }
+        .result {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            border: 1px solid #e2e8f0;
+        }
+        .success {
+            color: #059669;
+            font-weight: 600;
+        }
+        .error {
+            color: #dc2626;
+            font-weight: 600;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        th {
+            background: #f1f5f9;
+            font-weight: 600;
+        }
+        .warning {
+            background: #fef3c7;
+            color: #92400e;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h1>🔧 Виправлення типів та моделей</h1>
+            
+            <div class="warning">
+                ⚠️ Ця операція оновить записи, в яких відсутні тип або модель.
+                Рекомендується зробити резервну копію бази даних.
+            </div>
+            
+            <button id="fixBtn" onclick="fixInventory()">🔧 Виправити типи та моделі</button>
+            
+            <div id="result" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+    async function fixInventory() {
+        const btn = document.getElementById('fixBtn');
+        const resultDiv = document.getElementById('result');
+        
+        btn.disabled = true;
+        btn.innerHTML = '⏳ Виправлення...';
+        resultDiv.style.display = 'none';
+        
+        try {
+            const response = await fetch('fix_inventory_types.php');
+            const data = await response.json();
+            
+            if (data.success) {
+                let statsHtml = '<div class="result">';
+                statsHtml += '<h3 class="success">✅ Операція успішна</h3>';
+                statsHtml += `<p><b>Виправлено записів:</b> ${data.fixed}</p>`;
+                statsHtml += `<p><b>Всього записів:</b> ${data.total_records}</p>`;
+                
+                if (data.remaining_no_model > 0) {
+                    statsHtml += `<p style="color:#dc2626;"><b>⚠️ Залишилось без моделі:</b> ${data.remaining_no_model}</p>`;
+                }
+                if (data.remaining_no_type > 0) {
+                    statsHtml += `<p style="color:#dc2626;"><b>⚠️ Залишилось без типу:</b> ${data.remaining_no_type}</p>`;
+                }
+                
+                if (Object.keys(data.type_stats).length > 0) {
+                    statsHtml += '<h4>Статистика по типах:</h4>';
+                    statsHtml += '<table>';
+                    statsHtml += '<tr><th>Тип</th><th>Кількість</th></tr>';
+                    
+                    for (const [type, count] of Object.entries(data.type_stats)) {
+                        statsHtml += `<tr><td>${type}</td><td>${count}</td></tr>`;
+                    }
+                    
+                    statsHtml += '</table>';
+                }
+                
+                statsHtml += '</div>';
+                resultDiv.innerHTML = statsHtml;
+            } else {
+                resultDiv.innerHTML = `<div class="result error">❌ Помилка: ${data.error}</div>`;
+            }
+        } catch (err) {
+            resultDiv.innerHTML = `<div class="result error">❌ Помилка: ${err.message}</div>`;
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = '🔧 Виправити типи та моделі';
+            resultDiv.style.display = 'block';
+        }
+    }
+    </script>
+</body>
+</html>

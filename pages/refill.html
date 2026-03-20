@@ -1,0 +1,462 @@
+<!-- refill.html -->
+<header class="section-header">
+    <h1>🖨️ Облік картриджів</h1>
+    <div class="header-actions">
+        <button class="refill-btn refill-btn-primary" onclick="window.switchRefillTab('request')">
+            <span>➕</span> Нова заявка
+        </button>
+        <button class="refill-btn refill-btn-excel" onclick="window.exportCartridges()">
+            <span>📥</span> Експорт
+        </button>
+    </div>
+</header>
+
+<!-- ПРОСТІ ВКЛАДКИ З ПРЯМИМИ ПОСИЛАННЯМИ -->
+<div class="refill-tabs">
+    <button class="refill-tab-btn active" onclick="window.switchRefillTab('request')">📝 Заявки</button>
+    <button class="refill-tab-btn" onclick="window.switchRefillTab('cartridges')">💾 Картриджі</button>
+    <button class="refill-tab-btn" onclick="window.switchRefillTab('printers')">🖨️ Принтери</button>
+    <button class="refill-tab-btn" onclick="window.switchRefillTab('inventory')">📊 Запаси</button>
+</div>
+
+<!-- ===== ВКЛАДКА ЗАЯВКИ ===== -->
+<div id="refill-request" class="refill-tab-content active">
+    <!-- Форма створення заявки -->
+    <div class="refill-card">
+        <div class="refill-card-header">
+            <h3><span>📋</span> 1. Формування Заявки/Акту</h3>
+        </div>
+        <form id="refillForm">
+            <div class="refill-form-row">
+                <div class="refill-form-group">
+                    <div class="refill-field">
+                        <select id="rfAction" required>
+                            <option value="send">Відправка НА заправку</option>
+                            <option value="receive">Повернення З заправки</option>
+                        </select>
+                        <label>Дія *</label>
+                    </div>
+                </div>
+                <div class="refill-form-group">
+                    <div class="refill-field">
+                        <select id="rfLocation" required>
+                            <option value="">-- Оберіть локацію --</option>
+                        </select>
+                        <label>Відділення *</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="refill-form-row">
+                <div class="refill-form-group full-width">
+                    <div class="refill-field">
+                        <input type="text" id="rfPerson" required placeholder=" ">
+                        <label>ПІБ Відповідального *</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="refill-card" style="background: #f8fafc; margin-top: 20px;">
+                <div class="refill-card-header" style="border-bottom-color: #e2e8f0;">
+                    <h4><span>➕</span> Додати картридж до заявки</h4>
+                </div>
+                <div class="refill-form-row">
+                    <div class="refill-form-group" style="flex: 2;">
+                        <div class="refill-field" style="position: relative;">
+                            <input type="text" id="cartridgeModelInput" placeholder=" " autocomplete="off" required>
+                            <label>Модель *</label>
+                            <div id="modelDropdown" class="autocomplete-dropdown"></div>
+                        </div>
+                    </div>
+                    <div class="refill-form-group" style="flex: 1;">
+                        <div class="refill-field">
+                            <input type="text" id="rfCartNum" placeholder=" ">
+                            <label>Номер/Штрихкод</label>
+                        </div>
+                    </div>
+                    <div class="refill-form-group" style="flex: 0 0 auto;">
+                        <button type="button" class="refill-btn refill-btn-secondary" onclick="window.addRefillItem()" style="height: 56px; width: 56px; font-size: 20px;">➕</button>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="refill-btn refill-btn-primary" style="width: 100%; margin-top: 20px; padding: 16px;">
+                <span>📄</span> Створити та завантажити Акт
+            </button>
+        </form>
+    </div>
+
+    <!-- Кошик заявки -->
+    <div class="refill-card">
+        <div class="refill-card-header">
+            <h3><span>🛒</span> 2. Картриджі в Заявці</h3>
+            <span class="refill-status-badge refill-status-in-stock" id="cartCount">0</span>
+        </div>
+        <div class="refill-table-container" style="max-height: 300px;">
+            <table class="refill-table">
+                <thead>
+                    <tr>
+                        <th>Модель</th>
+                        <th>Номер/Штрихкод</th>
+                        <th style="width: 100px;">Дія</th>
+                    </tr>
+                </thead>
+                <tbody id="refillCartBody">
+                    <tr>
+                        <td colspan="3" class="refill-empty-state">
+                            <div class="refill-empty-icon">🛒</div>
+                            <div>Кошик порожній</div>
+                            <div style="font-size: 12px;">Додайте картриджі вище</div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Історія заправок -->
+    <div class="refill-card">
+        <div class="refill-card-header">
+            <h3><span>📜</span> Історія заправок (Журнал)</h3>
+        </div>
+        <div class="refill-table-container">
+            <table class="refill-table">
+                <thead>
+                    <tr>
+                        <th>Дата</th>
+                        <th>Відділення</th>
+                        <th>Дія</th>
+                        <th>Картриджі</th>
+                        <th>Статус</th>
+                        <th class="actions-col">Дії</th>
+                    </tr>
+                </thead>
+                <tbody id="refillHistoryBody">
+                    <tr>
+                        <td colspan="6" class="refill-loading-state">
+                            <div class="refill-spinner"></div>
+                            <div>Завантаження...</div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- ===== ВКЛАДКА КАРТРИДЖІ ===== -->
+<div id="refill-cartridges" class="refill-tab-content">
+    <!-- Фільтри -->
+    <div class="refill-card">
+        <div class="refill-card-header">
+            <h3><span>🔍</span> Фільтри</h3>
+            <button class="refill-btn refill-btn-secondary" onclick="window.toggleAddCartridgeForm()">
+                <span>➕</span> Додати картридж
+            </button>
+        </div>
+        <div class="refill-form-grid">
+            <div class="refill-field">
+                <select id="filterCartridgeStatus">
+                    <option value="all">Всі статуси</option>
+                    <option value="in_use">В роботі</option>
+                    <option value="in_stock">В запасі</option>
+                    <option value="for_refill">Очікує заправки</option>
+                    <option value="refilling">На заправці</option>
+                    <option value="broken">Дефектний</option>
+                    <option value="write_off">Списано</option>
+                </select>
+                <label>Статус</label>
+            </div>
+            <div class="refill-field">
+                <select id="filterCartridgeModel">
+                    <option value="all">Всі моделі</option>
+                </select>
+                <label>Модель</label>
+            </div>
+            <div class="refill-field">
+                <select id="filterCartridgeLocation">
+                    <option value="all">Всі локації</option>
+                </select>
+                <label>Локація</label>
+            </div>
+            <div class="refill-field">
+                <input type="text" id="filterCartridgeSearch" placeholder=" ">
+                <label>🔍 Пошук (штрихкод, серійник)</label>
+            </div>
+            <button class="refill-btn refill-btn-primary" onclick="window.applyCartridgeFilters()">
+                <span>🔍</span> Застосувати
+            </button>
+        </div>
+    </div>
+
+    <!-- Кнопки масових дій -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin: 20px 0 15px; flex-wrap: wrap; gap: 10px;">
+        <h3 style="margin:0;">Список картриджів</h3>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <button id="bulkReturnBtn" class="refill-btn refill-btn-primary" style="display: none; background: #10b981;" onclick="window.bulkReturnCartridges()">📥 Повернути вибрані</button>
+            <button class="refill-btn refill-btn-secondary" onclick="window.selectAllRefilling()">✅ Вибрати всі на заправці</button>
+            <button class="refill-btn refill-btn-secondary" onclick="window.unselectAll()">❌ Скасувати вибір</button>
+        </div>
+    </div>
+
+    <!-- Форма додавання/редагування картриджа -->
+    <div class="refill-card refill-inline-form" id="addCartridgeInlineForm" style="display: none;">
+        <div class="refill-card-header">
+            <h3 id="addCartridgeTitle"><span>➕</span> Додати новий картридж</h3>
+            <button class="refill-modal-close" onclick="window.toggleAddCartridgeForm()">✕</button>
+        </div>
+        <form id="addCartridgeForm">
+            <div class="refill-form-grid">
+                <div class="refill-field full-width">
+                    <div style="position: relative;">
+                        <input type="text" id="cartridgeModelInput" placeholder=" " autocomplete="off" required>
+                        <label>Модель *</label>
+                        <div id="modelDropdown" class="autocomplete-dropdown"></div>
+                    </div>
+                </div>
+                <div class="refill-field">
+                    <input type="text" id="cartridgeBarcode" placeholder=" ">
+                    <label>Штрихкод / Номер</label>
+                </div>
+                <div class="refill-field">
+                    <input type="text" id="cartridgeSerial" placeholder=" ">
+                    <label>Серійний номер</label>
+                </div>
+                <div class="refill-field">
+                    <select id="cartridgeStatus" required>
+                        <option value="in_stock">В запасі</option>
+                        <option value="for_refill">Очікує заправки</option>
+                    </select>
+                    <label>Початковий статус</label>
+                </div>
+                <div class="refill-field">
+                    <select id="cartridgeLocation" required>
+                        <option value="">-- Оберіть локацію --</option>
+                    </select>
+                    <label>Локація *</label>
+                </div>
+                <div class="refill-field">
+                    <input type="date" id="cartridgePurchaseDate">
+                    <label>Дата придбання</label>
+                </div>
+                <div class="refill-field full-width">
+                    <textarea id="cartridgeNotes" rows="2" placeholder=" "></textarea>
+                    <label>Примітки</label>
+                </div>
+            </div>
+            <div style="margin-top: 20px; text-align: right;">
+                <button type="submit" class="refill-btn refill-btn-primary">💾 Зберегти картридж</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Таблиця картриджів -->
+    <div class="refill-card">
+        <div class="refill-table-container">
+            <table class="refill-table">
+                <thead>
+                    <tr>
+                        <th style="width: 40px;"></th>
+                        <th>Статус</th>
+                        <th>Модель</th>
+                        <th>Штрихкод</th>
+                        <th>Серійний №</th>
+                        <th>Принтер</th>
+                        <th>Локація</th>
+                        <th>Заправок</th>
+                        <th>Дефект</th>
+                        <th class="actions-col">Дії</th>
+                    </tr>
+                </thead>
+                <tbody id="cartridgesTableBody">
+                    <tr>
+                        <td colspan="10" class="refill-loading-state">
+                            <div class="refill-spinner"></div>
+                            <div>Завантаження...</div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Інлайн-форми -->
+    <div class="refill-card refill-inline-form" id="quickMoveInlineForm" style="display: none;">
+        <div class="refill-card-header">
+            <h3><span>📦</span> Швидке переміщення</h3>
+            <button class="refill-modal-close" onclick="window.closeQuickMoveModal()">✕</button>
+        </div>
+        <form id="quickMoveForm">
+            <div class="refill-info-box" id="quickMoveCartridgeInfo"></div>
+            <input type="hidden" id="moveCartridgeId">
+            <div class="refill-form-grid">
+                <div class="refill-field">
+                    <select id="moveLocation" required>
+                        <option value="">-- Оберіть будівлю --</option>
+                    </select>
+                    <label>Куди (будівля) *</label>
+                </div>
+                <div class="refill-field">
+                    <select id="movePrinter">
+                        <option value="">-- Не встановлювати в принтер --</option>
+                    </select>
+                    <label>Встановити в принтер</label>
+                </div>
+                <div class="refill-field full-width">
+                    <textarea id="moveNotes" rows="2" placeholder=" "></textarea>
+                    <label>Примітка до переміщення</label>
+                </div>
+            </div>
+            <div style="margin-top: 20px; text-align: right;">
+                <button type="submit" class="refill-btn refill-btn-primary" style="background: #3b82f6;">✅ Перемістити</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="refill-card refill-inline-form" id="defectiveInlineForm" style="display: none;">
+        <div class="refill-card-header">
+            <h3 style="color: #dc2626;"><span>⚠️</span> Позначити дефект</h3>
+            <button class="refill-modal-close" onclick="window.closeDefectiveModal()">✕</button>
+        </div>
+        <form id="defectiveForm">
+            <input type="hidden" id="defectiveCartridgeId">
+            <div class="refill-field">
+                <textarea id="defectReason" rows="3" required placeholder=" "></textarea>
+                <label>Причина дефекту/поломки *</label>
+            </div>
+            <div style="margin-top: 20px; text-align: right;">
+                <button type="submit" class="refill-btn refill-btn-danger">🚫 Підтвердити дефект</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ===== ВКЛАДКА ПРИНТЕРИ ===== -->
+<div id="refill-printers" class="refill-tab-content">
+    <div class="refill-card">
+        <div class="refill-card-header">
+            <h3><span>🖨️</span> Принтери</h3>
+            <button class="refill-btn refill-btn-secondary" onclick="window.toggleAddPrinterForm()">
+                <span>➕</span> Додати принтер
+            </button>
+        </div>
+    </div>
+
+    <!-- Форма додавання принтера -->
+    <div class="refill-card refill-inline-form" id="addPrinterInlineForm" style="display: none;">
+        <div class="refill-card-header">
+            <h3><span>➕</span> Додати новий принтер</h3>
+            <button class="refill-modal-close" onclick="window.toggleAddPrinterForm()">✕</button>
+        </div>
+        <form id="addPrinterForm">
+            <div class="refill-form-grid">
+                <div class="refill-field">
+                    <select id="printerLocation" required>
+                        <option value="">-- Оберіть будівлю --</option>
+                    </select>
+                    <label>Будівля *</label>
+                </div>
+                <div class="refill-field">
+                    <input type="text" id="printerRoom" required placeholder=" ">
+                    <label>Кабінет *</label>
+                </div>
+                <div class="refill-field full-width">
+                    <input type="text" id="printerModel" required placeholder=" ">
+                    <label>Модель принтера *</label>
+                </div>
+                <div class="refill-field">
+                    <input type="text" id="printerName" placeholder=" ">
+                    <label>Назва в мережі</label>
+                </div>
+                <div class="refill-field">
+                    <input type="text" id="printerIP" placeholder=" ">
+                    <label>IP-адреса</label>
+                </div>
+                <div class="refill-field">
+                    <input type="text" id="printerInv" placeholder=" ">
+                    <label>Інвентарний номер</label>
+                </div>
+                <div class="refill-field">
+                    <input type="text" id="printerSerial" placeholder=" ">
+                    <label>Серійний номер</label>
+                </div>
+                <div class="refill-field full-width">
+                    <textarea id="printerNotes" rows="2" placeholder=" "></textarea>
+                    <label>Примітки</label>
+                </div>
+            </div>
+            <div style="margin-top: 20px; text-align: right;">
+                <button type="submit" class="refill-btn refill-btn-primary">💾 Зберегти принтер</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Таблиця принтерів -->
+    <div class="refill-card">
+        <div class="refill-table-container">
+            <table class="refill-table">
+                <thead>
+                    <tr>
+                        <th>Локація</th>
+                        <th>Модель</th>
+                        <th>Назва</th>
+                        <th>IP</th>
+                        <th>Інв. №</th>
+                        <th>Картридж</th>
+                        <th class="actions-col">Дії</th>
+                    </tr>
+                </thead>
+                <tbody id="printersTableBody">
+                    <tr>
+                        <td colspan="7" class="refill-loading-state">
+                            <div class="refill-spinner"></div>
+                            <div>Завантаження...</div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- ===== ВКЛАДКА ЗАПАСИ ===== -->
+<div id="refill-inventory" class="refill-tab-content">
+    <div class="refill-card">
+        <div class="refill-card-header">
+            <h3><span>📊</span> Зведені запаси по будівлях</h3>
+        </div>
+        <div id="inventorySummary" class="refill-buildings-grid">
+            <div class="refill-loading-state">
+                <div class="refill-spinner"></div>
+                <div>Завантаження...</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- МОДАЛЬНЕ ВІКНО ДЛЯ ДІЙ З КАРТРИДЖЕМ -->
+<div id="cartridgeActionModal" class="refill-modal-overlay">
+    <div class="refill-modal-content">
+        <div class="refill-modal-header">
+            <h2 id="cartActionTitle">Дія з картриджем</h2>
+            <button class="refill-modal-close" onclick="this.closest('.refill-modal-overlay').style.display='none'">×</button>
+        </div>
+        <div class="refill-modal-body">
+            <form id="cartActionForm" onsubmit="window.submitCartridgeAction(event); return false;">
+                <input type="hidden" id="actionCartId">
+                <input type="hidden" id="actionCartStatus">
+                <input type="hidden" id="actionFromRefill" value="0">
+
+                <div class="refill-field">
+                    <input type="text" id="actionNotes" placeholder=" ">
+                    <label id="actionNotesLabel">Примітки</label>
+                </div>
+
+                <div class="refill-modal-actions">
+                    <button type="button" class="refill-btn refill-btn-secondary" onclick="this.closest('.refill-modal-overlay').style.display='none'">Скасувати</button>
+                    <button type="submit" class="refill-btn refill-btn-primary">Підтвердити</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

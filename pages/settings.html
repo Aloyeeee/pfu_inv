@@ -1,0 +1,304 @@
+<header class="section-header">
+    <h1>⚙️ Налаштування системи</h1>
+    <div style="display: flex; gap: 10px; overflow-x: auto; padding-bottom: 5px;" id="settingsTabsContainer">
+        <button class="btn-secondary active" onclick="window.showSettingsTab('general', this)">Загальні</button>
+        <button class="btn-secondary" onclick="window.showSettingsTab('dictionaries', this)">🗂️ Довідники</button>
+        <button class="btn-secondary" onclick="window.showSettingsTab('docs', this)">📝 Документи</button>
+        <button class="btn-secondary" onclick="window.showSettingsTab('sessions', this)">🛡️ Сесії</button>
+        <button class="btn-secondary" onclick="window.showSettingsTab('database', this)">База даних</button>
+        <button class="btn-secondary" onclick="window.showSettingsTab('import', this)">Імпорт/Експорт</button>
+    </div>
+</header>
+
+<div id="settings-dictionaries" class="settings-tab">
+    
+    <div class="card" style="margin-bottom: 20px; background: #f0f9ff; border-left: 4px solid #0ea5e9; padding: 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+            <div>
+                <h3 style="margin: 0 0 5px 0; color: #0369a1;">🔄 Синхронізація довідників</h3>
+                <p style="margin: 0; font-size: 13px; color: #0c4a6e;">Автоматично шукає нові (введені вручну) локації у складі та додає їх у загальний довідник.</p>
+            </div>
+            <button class="btn-primary" style="background: #0ea5e9; border-color: #0ea5e9; box-shadow: 0 4px 10px rgba(14, 165, 233, 0.2);" onclick="window.syncDictionaries()">🚀 Запустити синхронізацію</button>
+        </div>
+    </div>
+
+    <div class="form-grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+        <div class="card">
+            <h3 style="margin-top: 0;">🏢 Будівлі та Локації</h3>
+            <p style="color: var(--text-muted); font-size: 13px;">Керування списком корпусів, будівель та філій.</p>
+            <button class="btn-secondary" onclick="window.manageLocations()" style="width: 100%;">Відкрити довідник</button>
+        </div>
+        <div class="card">
+            <h3 style="margin-top: 0;">💻 Типи техніки</h3>
+            <p style="color: var(--text-muted); font-size: 13px;">Категорії обладнання (ПК, Монітори, Світчі тощо).</p>
+            <button class="btn-secondary" onclick="window.manageEquipmentTypes()" style="width: 100%;">Відкрити довідник</button>
+        </div>
+        <div class="card">
+            <h3 style="margin-top: 0;">👤 МВО (Відповідальні)</h3>
+            <p style="color: var(--text-muted); font-size: 13px;">Призначення статусу матеріально-відповідальної особи.</p>
+            <button class="btn-secondary" onclick="window.manageMVO()" style="width: 100%;">Відкрити довідник</button>
+        </div>
+    </div>
+</div>
+
+<div id="settings-docs" class="settings-tab">
+    <div class="card" style="max-width: 800px;">
+        <h3 style="margin-top: 0; margin-bottom: 20px;">🏛️ Реквізити організації та Шаблони</h3>
+        <form id="orgRequisitesForm" onsubmit="window.saveRequisites(event)">
+            <div class="form-grid" style="grid-template-columns: 1fr 1fr;">
+                <div class="field" style="grid-column: 1 / -1;">
+                    <input type="text" id="orgName" placeholder=" ">
+                    <label>Повна назва установи (для Актів)</label>
+                </div>
+                <div class="field">
+                    <input type="text" id="orgEDRPOU" placeholder=" ">
+                    <label>Код ЄДРПОУ</label>
+                </div>
+                <div class="field">
+                    <input type="text" id="orgDirector" placeholder=" ">
+                    <label>ПІБ Керівника</label>
+                </div>
+                <div class="field">
+                    <input type="text" id="invPrefix" placeholder=" " value="ПФУ-">
+                    <label>Префікс для нових Б/Н номерів</label>
+                </div>
+                <div class="field">
+                    <select id="defaultPagination">
+                        <option value="50">50 записів на сторінку</option>
+                        <option value="100">100 записів на сторінку</option>
+                        <option value="500">500 записів на сторінку</option>
+                    </select>
+                    <label>Пагінація за замовчуванням</label>
+                </div>
+            </div>
+            <div style="margin-top: 20px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-light); padding-top: 20px;">
+                <button type="button" class="btn-secondary" onclick="document.getElementById('templateUpload').click()">📎 Завантажити шаблон Акту (.docx)</button>
+                <input type="file" id="templateUpload" accept=".docx" style="display: none;" onchange="window.uploadTemplate(event)">
+                <button type="submit" class="btn-primary">💾 Зберегти налаштування</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="settings-sessions" class="settings-tab">
+    <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h3 style="margin: 0;">🟢 Активні сесії</h3>
+            <button class="btn-primary" style="background: #ef4444;" onclick="window.killAllOtherSessions()">Викинути всіх, крім мене</button>
+        </div>
+        <div class="table-container">
+            <table id="sessionsTable">
+                <thead>
+                    <tr>
+                        <th>Користувач</th>
+                        <th>IP Адреса</th>
+                        <th>Остання активність</th>
+                        <th>Браузер / ОС</th>
+                        <th>Дія</th>
+                    </tr>
+                </thead>
+                <tbody id="sessionsTableBody">
+                    </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div id="settings-general" class="settings-tab active">
+    <div class="form-grid" style="grid-template-columns: 1fr 1fr; align-items: start;">
+        <div class="card">
+            <h3 style="margin-top: 0; margin-bottom: 15px;">🎨 Зовнішній вигляд</h3>
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 15px; background: var(--bg-body); border-radius: 12px; border: 1px solid var(--border-light);">
+                <div>
+                    <strong style="display: block; font-size: 1rem;">Темна тема</strong>
+                    <span style="font-size: 0.85rem; color: var(--text-muted);">Перемикання інтерфейсу в нічний режим</span>
+                </div>
+                <button id="themeToggleBtn" onclick="window.toggleTheme(event)" class="nav-item">🌙 Темна тема</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3 style="margin-top: 0; margin-bottom: 15px;">🔐 Безпека</h3>
+            <div style="display: flex; flex-direction: column; gap: 15px;">
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 15px; background: var(--bg-body); border-radius: 8px; border: 1px solid var(--border-light);">
+                    <span style="font-weight: 500;">Змінити пароль</span>
+                    <button class="btn-secondary" onclick="window.changePassword()">✏️ Змінити</button>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 15px; background: var(--bg-body); border-radius: 8px; border: 1px solid var(--border-light);">
+                    <span style="font-weight: 500;">Налаштування сесії</span>
+                    <button class="btn-secondary" onclick="window.sessionSettings()">⚙️ Відкрити</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3 style="margin-top: 0; margin-bottom: 15px;">👥 Користувачі та права</h3>
+        <p style="color: var(--text-muted); margin-bottom: 15px;">Управління обліковими записами та ролями співробітників.</p>
+        <div style="display: flex; gap: 10px;">
+            <button class="btn-primary" onclick="window.showUserManager()">➕ Додати користувача</button>
+            <button class="btn-secondary" onclick="window.showUserList()">📋 Список користувачів</button>
+        </div>
+    </div>
+</div>
+
+<!--<div id="settings-database" class="settings-tab">
+    <div class="form-grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+        <div class="card">
+            <h3 style="margin-top: 0; margin-bottom: 15px; color: var(--primary);">🗄️ Керування базою даних</h3>
+            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">Операції з очищення, резервного копіювання та відновлення.</p>
+            <div style="display: flex; flex-direction: column; gap: 15px;">
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 15px; background: var(--bg-body); border-radius: 8px; border: 1px solid var(--border-light);">
+                    <span><b style="color: #dc2626;">Повне очищення БД</b> <br><small style="color: var(--text-muted);">Видалить усі дані системи</small></span>
+                    <button class="btn-primary" onclick="window.openWipeModal()" style="background-color: #dc2626; border-color: #dc2626; box-shadow: 0 4px 10px rgba(220, 38, 38, 0.2);">🔥 Очистити</button>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 15px; background: var(--bg-body); border-radius: 8px; border: 1px solid var(--border-light);">
+                    <span><b style="color: #dc2626;">Очистити склад</b> <br><small style="color: var(--text-muted);">Видалити всі записи інвентарю</small></span>
+                    <button class="btn-secondary" onclick="window.clearEntireInventory()" style="color: #dc2626; border-color: #fca5a5;">🗑️ Очистити</button>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 15px; background: var(--bg-body); border-radius: 8px; border: 1px solid var(--border-light);">
+                    <span><b>Фікс складу</b> <br><small style="color: var(--text-muted);">Виправити ціни та інвентарні номери</small></span>
+                    <button class="btn-secondary" onclick="window.fixInventory()" style="color: #8b5cf6; border-color: #c4b5fd;">🛠️ Виправити</button>
+                </div>
+                
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 15px; background: var(--bg-body); border-radius: 8px; border: 1px solid var(--border-light);">
+                    <span><b>Перевірка здоров'я БД</b><br><small style="color: var(--text-muted);">Пошук помилок у зв'язках</small></span>
+                    <button class="btn-secondary" onclick="window.checkInventoryHealth()">🔍 Перевірити</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3 style="margin-top: 0; margin-bottom: 15px; color: var(--primary);">📥 Імпорт даних</h3>
+            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">Завантаження CSV, JSON та інших форматів.</p>
+            <div style="display: flex; flex-direction: column; gap: 15px;">
+                <button class="btn-primary" style="background: #8b5cf6; border-color: #8b5cf6;" onclick="window.restoreLocationsFromCSV()">
+                    📥 Оновити локації з CSV (По ID)
+                </button>
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 15px; background: var(--bg-body); border-radius: 8px; border: 1px solid var(--border-light);">
+                    <span><b>Імпорт інвентарю (1С)</b></span>
+                    <button class="btn-primary" onclick="window.import1CInventory()" style="background: #10b981; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.2);">📥 CSV</button>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 15px; background: var(--bg-body); border-radius: 8px; border: 1px solid var(--border-light);">
+                    <span><b>Імпорт довідника</b></span>
+                    <button class="btn-secondary" onclick="window.uploadCatalogCSV()">📥 CSV</button>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 15px; background: var(--bg-body); border-radius: 8px; border: 1px solid var(--border-light);">
+                    <span><b>Імпорт JSON (AIDA64)</b></span>
+                    <button class="btn-secondary" onclick="document.getElementById('specsUploadInput').click()">💽 JSON</button>
+                    <input type="file" id="specsUploadInput" multiple accept=".json" style="display:none;" onchange="window.handleSpecsUpload(event)">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="settings-import" class="settings-tab">
+    <div class="form-grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+        <div class="card">
+            <h3 style="margin-top: 0; margin-bottom: 15px; color: var(--primary);">📤 Експорт даних</h3>
+            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">Вивантаження таблиць у формат Excel.</p>
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 15px; background: var(--bg-body); border-radius: 8px; border: 1px solid var(--border-light);">
+                    <span><b>Експорт інвентарю</b></span>
+                    <button class="btn-excel" onclick="window.exportInventoryToExcel()">📥 Excel</button>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 15px; background: var(--bg-body); border-radius: 8px; border: 1px solid var(--border-light);">
+                    <span><b>Експорт кабінетів</b></span>
+                    <button class="btn-excel" onclick="window.exportRoomTableToExcel()">📥 Excel</button>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 15px; background: var(--bg-body); border-radius: 8px; border: 1px solid var(--border-light);">
+                    <span><b>Експорт приміток</b></span>
+                    <button class="btn-excel" onclick="window.exportNotesToExcel()">📥 Excel</button>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 15px; background: var(--bg-body); border-radius: 8px; border: 1px solid var(--border-light);">
+                    <span><b>Експорт картриджів</b></span>
+                    <button class="btn-excel" onclick="window.exportCartridges()">📥 Excel</button>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 15px; background: var(--bg-body); border-radius: 8px; border: 1px solid var(--border-light);">
+                    <span><b>Експорт аудиту</b></span>
+                    <button class="btn-excel" onclick="window.exportTableToExcel('auditTable', 'Audit_Log')">📥 Excel</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3 style="margin-top: 0; margin-bottom: 15px; color: var(--primary);">🔄 Масові операції</h3>
+            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">Очищення дублікатів, нормалізація даних.</p>
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 15px; background: var(--bg-body); border-radius: 8px; border: 1px solid var(--border-light);">
+                    <span><b>Видалити дублікати інвентарю</b></span>
+                    <button class="btn-secondary" onclick="window.removeDuplicates()">🗑️ Видалити</button>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 15px; background: var(--bg-body); border-radius: 8px; border: 1px solid var(--border-light);">
+                    <span><b>Перерахувати ціни автоіндексів</b></span>
+                    <button class="btn-secondary" onclick="window.recalculatePrices()">💰 Оновити</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="settings-maintenance" class="settings-tab">
+    <div class="card">
+        <h3 style="margin-top: 0; margin-bottom: 15px;">🛠️ Інструменти обслуговування</h3>
+        <div style="display: flex; flex-direction: column; gap: 15px;">
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 15px; background: var(--bg-body); border-radius: 8px; border: 1px solid var(--border-light);">
+                <div>
+                    <strong>Очистити кеш системи</strong>
+                    <p style="margin: 5px 0 0; font-size: 12px; color: var(--text-muted);">Видалення тимчасових даних для прискорення роботи</p>
+                </div>
+                <button class="btn-secondary" onclick="window.clearCache()">🗑️ Очистити</button>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 15px; background: var(--bg-body); border-radius: 8px; border: 1px solid var(--border-light);">
+                <div>
+                    <strong>Переглянути логи</strong>
+                    <p style="margin: 5px 0 0; font-size: 12px; color: var(--text-muted);">Журнали помилок PHP та бази даних</p>
+                </div>
+                <button class="btn-secondary" onclick="window.viewLogs()">📄 Відкрити</button>
+            </div>
+        </div>
+    </div>
+</div>-->
+
+<div id="wipeModal" class="modal-overlay" style="display:none;">
+    <div class="modal-content" style="max-width: 450px;">
+        <div class="modal-header">
+            <h3><span style="font-size: 20px;">⚠️</span> Підтвердження очищення</h3>
+            <button class="btn-secondary" onclick="window.closeWipeModal()" style="padding: 6px 12px; color: #ef4444; height: auto; border: none; background: transparent;">✖ Закрити</button>
+        </div>
+        <form id="wipeDatabaseForm">
+            <div class="modal-body">
+                <p style="margin-top: 0; margin-bottom: 20px; color: var(--text-dark); line-height: 1.5;">
+                    Увага! Ця дія <b>безповоротно видалить усі дані</b> з бази (інвентар, заявки, історію).<br><br>
+                    Введіть пароль адміністратора для підтвердження.
+                </p>
+                <div class="field" style="margin-bottom: 0;">
+                    <input type="password" id="wipePassword" placeholder=" " required autocomplete="off">
+                    <label>Пароль адміністратора *</label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary" onclick="window.closeWipeModal()">Скасувати</button>
+                <button type="submit" class="btn-primary" style="background: #ef4444; border-color: #ef4444; box-shadow: 0 4px 10px rgba(239, 68, 68, 0.2);">🔥 Знищити дані</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    .settings-tab {
+        display: none;
+    }
+    .settings-tab.active {
+        display: block;
+        animation: fadeIn 0.3s ease;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .settings-tab .card {
+        height: fit-content;
+    }
+</style>

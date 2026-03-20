@@ -1,0 +1,87 @@
+<div id="specsModal" class="modal-overlay" style="display:none;">
+    <div class="modal-content" style="max-width: 650px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-light); padding-bottom: 15px; margin-bottom: 15px;">
+            <h3 style="margin: 0; color: #8b5cf6;">🔍 Конфігурація (AIDA64)</h3>
+            <button class="btn-secondary" style="padding: 5px 10px; font-size: 12px;" onclick="document.getElementById('specsModal').style.display='none'">✖ Закрити</button>
+        </div>
+        <div id="specsContent"></div>
+    </div>
+</div>
+
+<div id="returnModal" class="modal-overlay" style="display:none;">
+    <div class="modal-content">
+        <h3 style="margin-top: 0; color: #ea580c;">Оформлення Акту повернення</h3>
+        <p id="returnLpInfo" style="font-size: 13px; color: var(--text-muted);"></p>
+        <form id="returnLaptopForm">
+            <input type="hidden" id="returnLpId">
+            <div class="field"><label>Місце повернення *</label><select id="retLocation" required></select></div>
+            <div class="field"><label>Хто приймає (ПІБ) *</label><input type="text" id="retReceiver" required></div>
+            <div class="field"><label>Управління (Хто приймає) *</label><select id="retReceiverDir" required></select></div>
+            <div class="field"><label>Відділ (Хто приймає) *</label><select id="retReceiverDept" required disabled></select></div>
+            <div class="field"><label>Посада (Хто приймає) *</label><select id="retReceiverTitle" required disabled></select></div>
+            <div style="display: flex; gap: 10px; margin-top: 15px;">
+                <button type="submit" class="btn-primary" style="flex: 1;">Підтвердити повернення</button>
+                <button type="button" class="btn-secondary" style="flex: 1;" onclick="window.closeReturnModal()">Скасувати</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="wipeModal" class="modal-overlay" style="display:none;">
+    <div class="modal-content">
+        <h3 style="margin-top: 0; color: #dc2626;">⚠️ Знищення всіх даних</h3>
+        <p style="font-size: 13px; color: var(--text-muted);">Введіть пароль адміністратора для підтвердження. Дія незворотня!</p>
+        <form id="wipeDatabaseForm">
+            <div class="field"><input type="password" id="wipePassword" required placeholder="Пароль"></div>
+            <div style="display: flex; gap: 10px; margin-top: 15px;">
+                <button type="submit" class="btn-primary" style="flex: 1; background-color: #dc2626;">🔥 Знищити</button>
+                <button type="button" class="btn-secondary" style="flex: 1;" onclick="window.closeWipeModal()">Скасувати</button>
+            </div>
+        </form>
+    </div>
+</div>
+<div id="noteModal" class="modal-overlay" style="display:none;">
+    <div class="modal-content" style="max-width: 700px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <h3 style="margin:0; display: flex; align-items: center; gap: 8px;">
+                <span style="font-size: 24px;">📝</span> 
+                <span id="noteModalTitle"></span>
+            </h3>
+            <button class="btn-secondary" onclick="window.closeNoteModal()" style="padding:6px 12px;">✖ Закрити</button>
+        </div>
+        
+        <!-- Список існуючих приміток -->
+        <div style="margin-bottom: 20px;">
+            <h4 style="margin:0 0 10px 0; font-size:14px; color:var(--text-muted);">📋 Історія приміток</h4>
+            <div id="noteListContainer" style="max-height: 300px; overflow-y: auto; border:1px solid var(--border-light); border-radius:12px; padding:10px; background: var(--bg-body);">
+                <div class="empty-state" style="padding: 20px;">
+                    <p style="color:var(--text-muted); margin:0;">Завантаження...</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Форма додавання нової примітки -->
+        <div style="border-top: 2px solid var(--border-light); padding-top: 20px;">
+            <h4 style="margin:0 0 15px 0; font-size:14px; color:var(--text-muted);">➕ Додати нову примітку</h4>
+            <form id="noteForm">
+                <input type="hidden" id="noteTargetType">
+                <input type="hidden" id="noteTargetId">
+                
+                <div class="field" style="margin-bottom: 15px;">
+                    <textarea id="noteText" rows="4" placeholder=" " required style="padding: 16px 14px 4px 14px; min-height: 100px;"></textarea>
+                    <label>Текст примітки...</label>
+                </div>
+                
+                <div style="display:flex; align-items:center; gap:10px; margin:15px 0; padding:10px; background: #fef3c7; border-radius: 8px;">
+                    <input type="checkbox" id="noteIsPrivate" style="width:18px; height:18px;">
+                    <label for="noteIsPrivate" style="font-size:13px; font-weight:600; color:#92400e;">🔒 Зробити приватною (лише для адміністраторів)</label>
+                </div>
+                
+                <div style="display: flex; gap: 10px;">
+                    <button type="submit" class="btn-primary" style="flex: 2; height: 44px;">💾 Зберегти примітку</button>
+                    <button type="button" class="btn-secondary" onclick="window.closeNoteModal()" style="flex: 1;">Скасувати</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

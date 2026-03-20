@@ -1,0 +1,137 @@
+<header class="section-header">
+    <h1>📦 Складський облік</h1>
+</header>
+
+<div style="display: flex; justify-content: flex-end; align-items: center; gap: 15px; margin-bottom: 20px;">
+    <div id="importProgressContainer" style="display:none; flex-grow: 1; max-width: 400px; background: #e2e8f0; border-radius: 10px; overflow: hidden; height: 20px; position: relative;">
+        <div id="importProgressBar" style="width: 0%; height: 100%; background: linear-gradient(90deg, #3b82f6, #8b5cf6); transition: width 0.3s ease;"></div>
+        <div id="importStatusText" style="position: absolute; top: 0; left: 0; right: 0; text-align: center; color: white; font-size: 11px; font-weight: bold; line-height: 20px; text-shadow: 0 1px 2px rgba(0,0,0,0.2);">Завантаження: 0%</div>
+    </div>
+    <button class="btn-primary admin-only" onclick="window.import1CInventory()" style="background: #10b981; height: 42px;">
+        📤 Імпорт CSV
+    </button>
+</div>
+
+<div class="admin-only" style="margin-bottom: 25px; display: none;" id="inventoryFormContainer">
+    <div class="card" style="margin-bottom: 0; border: 1px solid var(--primary-light);">
+        <h3 style="margin-top: 0; margin-bottom: 20px;">➕ Додати / Редагувати техніку на складі</h3>
+        <form id="inventoryForm">
+            <input type="hidden" id="editInvId">
+            
+            <div class="form-grid" style="grid-template-columns: 1fr 1fr 1fr; gap: 20px;">
+                <div class="field">
+                    <select id="invLocation" required><option value="" disabled selected>Виберіть локацію</option></select>
+                    <label>Будівля (Локація) *</label>
+                </div>
+                <div class="field">
+                    <select id="invType" required><option value="" disabled selected>Виберіть тип</option></select>
+                    <label>Тип техніки *</label>
+                </div>
+                <div class="field">
+                    <select id="invName" required><option value="" disabled selected>Виберіть модель</option></select>
+                    <label>Модель *</label>
+                </div>
+                
+                <div class="field"><input type="text" id="invNum" placeholder=" "><label>Інвентарний №</label></div>
+                <div class="field"><input type="text" id="invSN" placeholder=" "><label>Серійний № (S/N)</label></div>
+                <div style="position: relative;">
+                    <div class="field">
+                        <input type="text" id="invPerson" placeholder=" " oninput="if(window.handleEmpNameInput) window.handleEmpNameInput()" autocomplete="off">
+                        <label>МВО (ПІБ)</label>
+                    </div>
+                    <div id="empNameDropdown" class="autocomplete-dropdown" style="display:none;"></div>
+                </div>
+                
+                <div class="field"><input type="number" id="invPrice" step="0.01" placeholder=" "><label>Вартість (грн)</label></div>
+                <div class="field">
+                    <select id="invStatus">
+                        <option value="На складі">На складі</option>
+                        <option value="В роботі">В роботі</option>
+                        <option value="В ремонті">В ремонті</option>
+                        <option value="Для списання">Для списання</option>
+                        <option value="Готується на списання">Готується на списання</option>
+                    </select>
+                    <label>Статус</label>
+                </div>
+                <div class="field"><input type="date" id="invStartDate"><label>Дата введення</label></div>
+            </div>
+            
+            <div style="display: flex; gap: 10px; margin-top: 25px;">
+                <button type="submit" id="invSubmitBtn" class="btn-primary" style="flex: 2; height: 48px; font-weight: 700;">✅ Взяти на облік</button>
+                <button type="button" id="invCancelBtn" class="btn-secondary" style="display: none; flex: 1;" onclick="window.cancelInvEdit()">Скасувати</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px;">
+        <div style="display: flex; gap: 10px; flex: 1; flex-wrap: wrap; align-items: center;">
+            <div class="field" style="min-width: 150px;"><select id="filterLoc1"></select><label>Локація</label></div>
+            <div class="field" style="min-width: 150px;">
+                <select id="invFilterStatus">
+                    <option value="all">Всі статуси</option>
+                    <option value="На складі">На складі</option>
+                    <option value="В роботі">В роботі</option>
+                    <option value="В ремонті">В ремонті</option>
+                    <option value="Для списання">Для списання</option>
+                </select>
+                <label>Статус</label>
+            </div>
+            <div class="field" style="min-width: 160px;">
+                <select id="invFilterInvType">
+                    <option value="all">Всі інвентарні</option>
+                    <option value="has_inv">З номером</option>
+                    <option value="no_inv">Без номера (Б/Н)</option>
+                    <option value="auto_inv">Авто-індекси</option>
+                </select>
+                <label>Тип номеру</label>
+            </div>
+            <div class="field" style="min-width: 180px;"><select id="invFilterPerson"><option value="all">Всі МВО</option></select><label>Відповідальний</label></div>
+            
+            <div class="field" style="flex-grow: 1; min-width: 250px;">
+                <input type="text" id="invSearch" placeholder=" ">
+                <label>🔍 Пошук (Модель, Інв, S/N, ПІБ)...</label>
+            </div>
+        </div>
+        <button class="btn-excel" onclick="window.openExportModal()" style="height: 42px; padding: 0 20px;">
+            📥 Експорт Excel
+        </button>
+    </div>
+    
+    <div class="table-container">
+        <table id="inventoryTable">
+            <thead>
+                <tr>
+                    <th class="sortable" onclick="window.sortInventory('location')">Локація <span class="sort-icon"></span></th>
+                    <th class="sortable" onclick="window.sortInventory('type')">Обладнання <span class="sort-icon"></span></th>
+                    <th class="sortable" onclick="window.sortInventory('inv')">Номери <span class="sort-icon"></span></th>
+                    <th class="sortable" onclick="window.sortInventory('person')">МВО <span class="sort-icon"></span></th>
+                    <th class="sortable" onclick="window.sortInventory('startDate')">Введено <span class="sort-icon"></span></th>
+                    <th class="sortable" onclick="window.sortInventory('price')">Ціна <span class="sort-icon"></span></th>
+                    <th class="sortable" onclick="window.sortInventory('status')">Статус <span class="sort-icon"></span></th>
+                    <th class="actions-col" style="width: 280px; min-width: 280px;">Дії</th>
+                </tr>
+            </thead>
+            <tbody id="inventoryTableBody">
+                <tr><td colspan="8" style="text-align: center; padding: 40px; color: var(--text-muted);">⏳ Завантаження бази даних...</td></tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="pagination-controls" style="margin-top: 20px; display: flex; justify-content: space-between; align-items: center;">
+        <div style="display: flex; align-items: center; gap: 10px; font-size: 13px;">
+            Показувати по: 
+            <select id="invItemsPerPage" onchange="window.changeInvItemsPerPage()" style="width: 70px; height: 32px; border-radius: 6px;">
+                <option value="50">50</option>
+                <option value="100">100</option>
+                <option value="all">Всі</option>
+            </select>
+        </div>
+        <div class="page-info" id="invPageInfo" style="font-weight: 600; color: var(--text-dark);">Сторінка 1 з 1</div>
+        <div style="display: flex; gap: 8px;">
+            <button class="btn-secondary" id="invPrevPage" onclick="window.changeInvPage(-1)" disabled style="padding: 8px 15px;">⬅ Попередня</button>
+            <button class="btn-secondary" id="invNextPage" onclick="window.changeInvPage(1)" style="padding: 8px 15px;">Наступна ➡</button>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Система обліку ПФУ | Сумська область</title>
+    
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/tables.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/refill.css">
+
+    <link rel="icon" href="data:,">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
+</head>
+<body>
+    
+    <div id="global-preloader">
+        <div class="preloader-container">
+            <div class="preloader-orbit preloader-orbit-outer"></div>
+            <div class="preloader-orbit preloader-orbit-inner"></div>
+            <div class="preloader-core"></div>
+            <div class="preloader-text">ГУ ПФУ в СУМСЬКІЙ ОБЛАСТІ</div>
+            <div class="preloader-subtext">Ініціалізація бази даних...</div>
+        </div>
+    </div>
+
+    <div id="login-wrapper"></div>
+
+    <div id="modals-wrapper">
+        
+        <div id="exportModal" class="modal">
+            <div class="modal-content small">
+                <div class="modal-header">
+                    <h2>📥 Експорт складу в Excel</h2>
+                    <span class="close" onclick="window.closeExportModal()">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <p style="color: #64748b; margin-bottom: 15px;">Експортується <b id="exportItemsCount" style="color: #0ea5e9;">0</b> записів:</p>
+                    <div class="export-fields-grid">
+                        <label class="custom-checkbox"><input type="checkbox" name="exportField" value="location" checked> 🏢 Локація</label>
+                        <label class="custom-checkbox"><input type="checkbox" name="exportField" value="type" checked> 💻 Тип</label>
+                        <label class="custom-checkbox"><input type="checkbox" name="exportField" value="model" checked> 📱 Модель</label>
+                        <label class="custom-checkbox"><input type="checkbox" name="exportField" value="inv" checked> 🔢 Інвентарний №</label>
+                        <label class="custom-checkbox"><input type="checkbox" name="exportField" value="sn"> 🔢 Серійний №</label>
+                        <label class="custom-checkbox"><input type="checkbox" name="exportField" value="person" checked> 👤 МВО</label>
+                        <label class="custom-checkbox"><input type="checkbox" name="exportField" value="startDate"> 📅 Дата</label>
+                        <label class="custom-checkbox"><input type="checkbox" name="exportField" value="price"> 💰 Ціна</label>
+                        <label class="custom-checkbox"><input type="checkbox" name="exportField" value="status" checked> 📊 Статус</label>
+                    </div>
+                </div>
+                <div class="modal-footer" style="justify-content: space-between;">
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn-secondary" onclick='document.querySelectorAll("#exportModal input[name=exportField]").forEach(cb => cb.checked = true)'>✅ Всі</button>
+                        <button class="btn-secondary" onclick='document.querySelectorAll("#exportModal input[name=exportField]").forEach(cb => cb.checked = false)'>❌ Жодного</button>
+                    </div>
+                    <button class="btn-primary" onclick="window.exportFilteredInventory()">📥 Завантажити</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="roomExportModal" class="modal">
+            <div class="modal-content small">
+                <div class="modal-header">
+                    <h2>📥 Експорт кабінетів в Excel</h2>
+                    <span class="close" onclick="window.closeRoomExportModal()">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <p style="color: #64748b; margin-bottom: 15px;">Експортується <b id="roomExportCount" style="color: #0ea5e9;">0</b> записів:</p>
+                    <div class="export-fields-grid">
+                        <label class="custom-checkbox"><input type="checkbox" name="roomExportField" value="loc" checked> 🏢 Будівля</label>
+                        <label class="custom-checkbox"><input type="checkbox" name="roomExportField" value="room" checked> 🚪 Кабінет</label>
+                        <label class="custom-checkbox"><input type="checkbox" name="roomExportField" value="type" checked> 💻 Тип</label>
+                        <label class="custom-checkbox"><input type="checkbox" name="roomExportField" value="model" checked> 📱 Модель</label>
+                        <label class="custom-checkbox"><input type="checkbox" name="roomExportField" value="inv" checked> 🔢 Інвентарний</label>
+                        <label class="custom-checkbox"><input type="checkbox" name="roomExportField" value="sn"> 🔢 Серійний</label>
+                        <label class="custom-checkbox"><input type="checkbox" name="roomExportField" value="ip"> 🌐 IP</label>
+                        <label class="custom-checkbox"><input type="checkbox" name="roomExportField" value="hostname"> 💻 Host</label>
+                        <label class="custom-checkbox"><input type="checkbox" name="roomExportField" value="person" checked> 👤 Корист.</label>
+                        <label class="custom-checkbox"><input type="checkbox" name="roomExportField" value="mvo" checked> 🔰 МВО</label>
+                        <label class="custom-checkbox"><input type="checkbox" name="roomExportField" value="status" checked> 📊 Статус</label>
+                    </div>
+                </div>
+                <div class="modal-footer" style="justify-content: space-between;">
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn-secondary" onclick='document.querySelectorAll("#roomExportModal input[name=roomExportField]").forEach(cb => cb.checked = true)'>✅ Всі</button>
+                        <button class="btn-secondary" onclick='document.querySelectorAll("#roomExportModal input[name=roomExportField]").forEach(cb => cb.checked = false)'>❌ Жодного</button>
+                    </div>
+                    <button class="btn-primary" onclick="window.exportRoomTableWithFields()">📥 Завантажити</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="noteModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 id="noteModalTitle">📝 Примітки</h2>
+                    <span class="close" onclick="window.closeNoteModal()">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <div id="noteListContainer" style="max-height: 300px; overflow-y: auto; margin-bottom: 20px;"></div>
+                    <form id="noteForm">
+                        <input type="hidden" id="noteTargetType">
+                        <input type="hidden" id="noteTargetId">
+                        <div class="field">
+                            <textarea id="noteText" rows="3" placeholder=" " required></textarea>
+                            <label>Текст примітки</label>
+                        </div>
+                        <div style="margin: 15px 0; display: flex; align-items: center; gap: 10px;">
+                            <input type="checkbox" id="noteIsPrivate" style="width: 18px; height: 18px;">
+                            <label for="noteIsPrivate" style="color: var(--text-muted);">🔒 Приватна примітка (тільки для адмінів)</label>
+                        </div>
+                        <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                            <button type="button" class="btn-secondary" onclick="window.closeNoteModal()">✕ Закрити</button>
+                            <button type="submit" class="btn-primary">💾 Додати</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div id="specsPreviewModal" class="modal">
+            <div class="modal-content large">
+                <div class="modal-header">
+                    <h2>👁️ Перегляд JSON</h2>
+                    <span class="close" onclick="document.getElementById('specsPreviewModal').style.display='none'">&times;</span>
+                </div>
+                <div class="modal-body" id="specsPreviewContent" style="max-height: 500px; overflow: auto;"></div>
+            </div>
+        </div>
+
+        <div id="specsConflictModal" class="modal">
+            <div class="modal-content large">
+                <div class="modal-header">
+                    <h2>⚠️ Конфлікти при завантаженні JSON</h2>
+                    <span class="close" onclick="document.getElementById('specsConflictModal').style.display='none'">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <table style="width:100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="background: #f8fafc; text-align: left;">
+                                <th style="padding: 12px; border-bottom: 1px solid #e2e8f0;">📄 Дані з файлу</th>
+                                <th style="padding: 12px; border-bottom: 1px solid #e2e8f0;">🔗 Прив'язка до ПК</th>
+                                <th style="padding: 12px; border-bottom: 1px solid #e2e8f0;">⚙️ Дія</th>
+                            </tr>
+                        </thead>
+                        <tbody id="conflictTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    
+    <div id="sidebarOverlay" class="sidebar-overlay"></div>
+    
+    <div id="mainApp" class="app-layout" style="display:none;">
+        <aside class="sidebar" id="sidebar"></aside>
+        <main class="main-content">
+            <div class="mobile-header"></div>
+            <section id="dashboard" class="tab-content"></section>
+            <section id="inventory" class="tab-content" style="display:none;"></section>
+            <section id="rooms" class="tab-content" style="display:none;"></section>
+            <section id="transfer" class="tab-content" style="display:none;"></section>
+            <section id="refill" class="tab-content" style="display:none;"></section>
+            <section id="laptops" class="tab-content" style="display:none;"></section>
+            <section id="employee" class="tab-content" style="display:none;"></section>
+            <section id="catalog" class="tab-content" style="display:none;"></section>
+            <section id="audit" class="tab-content" style="display:none;"></section>
+            <section id="settings" class="tab-content" style="display:none;"></section>
+            <section id="notes" class="tab-content" style="display:none;"></section>
+        </main>
+    </div>
+    
+    <script type="module" src="js/core/boot.js"></script>
+</body>
+</html>
